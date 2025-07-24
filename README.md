@@ -2,8 +2,6 @@
 
 Selamat datang di Aplikasi Manajemen Data Ikan Sidat. Aplikasi web ini dibangun dengan cermat menggunakan Laravel 10 untuk berfungsi sebagai sebuah platform terpusat yang kuat bagi para pengguna dan administrator. Tujuannya adalah untuk menyederhanakan proses pencatatan, pengelolaan, dan analisis data penangkapan ikan sidat, memastikan setiap data tercatat secara efisien dan akurat.
 
-![Cuplikan Layar Dasbor](https://i.imgur.com/gKAfYvE.png)
-
 Aplikasi ini dirancang secara khusus untuk memenuhi kebutuhan berbagai pemangku kepentingan, termasuk lembaga penelitian, dinas perikanan pemerintah, dan komunitas nelayan lokal. Dengan menyediakan platform terpadu, aplikasi ini memfasilitasi kolaborasi dan standardisasi data di antara berbagai pihak. Fitur visualisasi data yang canggih dan alur manajemen data yang intuitif dirancang tidak hanya untuk mengumpulkan data, tetapi juga untuk mengubahnya menjadi wawasan yang dapat ditindaklanjuti. Pada akhirnya, aplikasi ini bertujuan untuk mendukung pengambilan keputusan berbasis data yang lebih baik, yang sangat krusial untuk pengelolaan sumber daya perikanan sidat yang berkelanjutan dan upaya konservasinya di masa depan.
 
 ---
