@@ -1,223 +1,216 @@
-Aplikasi Manajemen Data Ikan Sidat
-Selamat datang di Aplikasi Manajemen Data Ikan Sidat. Aplikasi web ini dibuat menggunakan Laravel 10 untuk membantu pengguna dan administrator dalam mencatat, mengelola, dan menganalisis data penangkapan ikan sidat secara efisien dan akurat.
+# Aplikasi Manajemen Data Ikan Sidat
 
-Aplikasi ini dirancang untuk menjadi platform terpusat bagi para peneliti, nelayan, dan pemangku kepentingan untuk melacak berbagai metrik penting terkait populasi dan penangkapan sidat. Dengan fitur visualisasi data yang canggih dan manajemen data yang intuitif, aplikasi ini bertujuan untuk mendukung pengambilan keputusan yang lebih baik dalam pengelolaan sumber daya perikanan sidat.
+Selamat datang di Aplikasi Manajemen Data Ikan Sidat. Aplikasi web ini dibangun dengan cermat menggunakan Laravel 10 untuk berfungsi sebagai sebuah platform terpusat yang kuat bagi para pengguna dan administrator. Tujuannya adalah untuk menyederhanakan proses pencatatan, pengelolaan, dan analisis data penangkapan ikan sidat, memastikan setiap data tercatat secara efisien dan akurat.
 
-Daftar Fitur
-Manajemen Pengguna: Sistem otentikasi lengkap dengan dua level peran:
+![Cuplikan Layar Dasbor](https://i.imgur.com/gKAfYvE.png)
 
-User: Dapat mengelola (membuat, melihat, mengedit, menghapus) data yang mereka masukkan sendiri.
+Aplikasi ini dirancang secara khusus untuk memenuhi kebutuhan berbagai pemangku kepentingan, termasuk lembaga penelitian, dinas perikanan pemerintah, dan komunitas nelayan lokal. Dengan menyediakan platform terpadu, aplikasi ini memfasilitasi kolaborasi dan standardisasi data di antara berbagai pihak. Fitur visualisasi data yang canggih dan alur manajemen data yang intuitif dirancang tidak hanya untuk mengumpulkan data, tetapi juga untuk mengubahnya menjadi wawasan yang dapat ditindaklanjuti. Pada akhirnya, aplikasi ini bertujuan untuk mendukung pengambilan keputusan berbasis data yang lebih baik, yang sangat krusial untuk pengelolaan sumber daya perikanan sidat yang berkelanjutan dan upaya konservasinya di masa depan.
 
-Admin: Memiliki semua hak akses User, ditambah kemampuan untuk melihat dan mengelola data dari semua pengguna serta mengelola peran pengguna lain.
+---
 
-Dasbor Analitik Interaktif: Halaman utama setelah login yang menyajikan visualisasi data secara komprehensif.
+## Daftar Fitur
 
-Kartu Statistik Utama: Menampilkan ringkasan data kunci seperti total entri, total berat tangkapan tahun ini, dan jumlah nelayan unik, dengan animasi angka yang menarik.
+* **Manajemen Pengguna:** Sistem otentikasi yang aman dan lengkap dengan dua level peran yang jelas untuk kontrol akses yang terperinci:
+    * **User:** Peran standar yang memungkinkan pengguna (misalnya, nelayan atau pencatat data lapangan) untuk mengelola—membuat, melihat, mengedit, dan menghapus—data yang mereka masukkan sendiri. Setiap pengguna memiliki ruang kerja data yang terisolasi untuk memastikan privasi dan kepemilikan data.
+    * **Admin:** Peran dengan hak akses tertinggi. Admin memiliki semua kemampuan seorang User, ditambah dengan akses penuh untuk melihat dan mengelola data dari *semua* pengguna. Ini penting untuk pengawasan, validasi data, dan analisis agregat. Selain itu, admin memiliki wewenang untuk mengelola peran pengguna lain, mempromosikan User menjadi Admin atau sebaliknya.
 
-6 Bagan Dinamis: Termasuk grafik garis untuk tren bulanan, diagram lingkaran untuk komposisi spesies, dan diagram batang untuk perbandingan data antar provinsi, nelayan, dan lainnya.
+* **Dasbor Analitik Interaktif:** Halaman utama setelah login yang berfungsi sebagai pusat komando visual, menyajikan data dalam format yang mudah dicerna.
+    * **Kartu Statistik Utama:** Tiga kartu di bagian atas memberikan ringkasan data kunci secara *real-time*, seperti total entri yang tercatat, total berat tangkapan dalam kilogram untuk tahun berjalan, dan jumlah nelayan unik yang telah menyumbangkan data. Angka-angka ini disajikan dengan animasi hitung yang menarik saat halaman dimuat.
+    * **6 Bagan Dinamis:** Visualisasi data yang kaya untuk analisis mendalam, termasuk grafik garis untuk melacak tren tangkapan bulanan, diagram lingkaran (*doughnut chart*) untuk melihat komposisi spesies yang paling dominan, dan diagram batang untuk membandingkan jumlah data antar provinsi, produktivitas nelayan, dan lainnya.
+    * **Filter Global:** Sebuah panel filter yang dapat diciutkan memungkinkan pengguna untuk menyaring data di seluruh dasbor secara bersamaan berdasarkan Tahun, Bulan, Provinsi, atau Spesies tertentu. Ini memungkinkan analisis yang sangat spesifik, misalnya, "tampilkan data untuk spesies *Anguilla marmorata* di Sumatera Selatan selama kuartal ketiga tahun 2025."
 
-Filter Global: Semua bagan di dasbor dapat difilter secara bersamaan berdasarkan Tahun, Bulan, Provinsi, atau Spesies untuk analisis yang lebih mendalam.
+* **Manajemen Data (CRUD):** Fungsionalitas penuh untuk mengelola siklus hidup setiap catatan data sidat.
+    * **Create:** Formulir input yang terstruktur dengan validasi data di setiap kolom untuk memastikan integritas dan konsistensi data yang dimasukkan.
+    * **Read:** Tampilan tabel yang bersih dengan *header* yang tetap terlihat saat menggulir (*sticky header*) dan paginasi otomatis, memastikan penanganan data dalam volume besar tetap lancar dan tidak membebani peramban.
+    * **Update:** Kemampuan untuk mengedit setiap entri data yang ada melalui formulir yang sudah terisi sebelumnya, meminimalkan kesalahan input ulang.
+    * **Delete:** Opsi penghapusan yang aman dengan dialog konfirmasi SweetAlert untuk mencegah kehilangan data yang tidak disengaja.
 
-Manajemen Data (CRUD): Fungsionalitas penuh untuk mengelola catatan data sidat.
+* **Pencarian & Filter Lanjutan:** Alat bantu yang kuat di halaman data untuk navigasi yang cepat dan efisien.
+    * **Pencarian Teks:** Bilah pencarian tunggal yang dapat mencari data secara instan di beberapa kolom kunci sekaligus, seperti nama sungai, spesies, atau nama nelayan.
+    * **Filter Rentang Tanggal:** Pengguna dapat memilih tanggal mulai dan akhir dari kalender untuk menampilkan data hanya dari periode waktu tertentu, sangat berguna untuk laporan mingguan, bulanan, atau kuartalan.
 
-Create: Formulir input data yang terstruktur dan mudah digunakan.
+* **Ekspor ke Excel:** Dengan satu klik, pengguna dapat mengekspor data yang telah difilter di tabel ke dalam format `.xlsx`. Fitur ini sangat penting untuk analisis data lebih lanjut di luar aplikasi, membuat laporan kustom, atau berbagi data dengan pemangku kepentingan yang tidak memiliki akses langsung ke sistem.
 
-Read: Tampilan tabel yang jelas dengan paginasi untuk menangani volume data yang besar.
+* **QR Code Unik:** Setiap entri data secara otomatis menghasilkan QR Code yang unik, menjembatani data digital dengan dunia fisik.
+    * **Akses Cepat:** Pindai kode dengan kamera ponsel untuk membuka halaman detail publik yang menampilkan informasi kunci dari catatan tersebut. Halaman ini dapat diakses oleh siapa saja tanpa perlu login, ideal untuk berbagi informasi secara cepat.
+    * **Integrasi Fisik:** Bayangkan sebuah skenario di mana QR Code dicetak dan ditempel pada wadah sampel di laboratorium atau pada laporan cetak. Siapa pun dapat memindainya untuk langsung mengakses catatan digital lengkapnya, menciptakan alur kerja yang mulus.
 
-Update: Kemampuan untuk mengedit setiap entri data yang ada.
+* **Avatar Otomatis:** Sistem avatar yang cerdas yang meningkatkan pengalaman pengguna tanpa memerlukan upaya tambahan dari pengguna. Avatar secara dinamis dibuat menggunakan inisial nama depan dan belakang pengguna, memberikan identitas visual yang jelas di seluruh aplikasi, terutama di menu navigasi dan tabel manajemen pengguna oleh admin.
 
-Delete: Opsi untuk menghapus data dengan konfirmasi untuk mencegah kehilangan data yang tidak disengaja.
+* **Antarmuka Responsif:** Didesain dengan pendekatan *mobile-first* menggunakan Tailwind CSS, aplikasi ini memastikan bahwa semua fitur, mulai dari tabel data hingga bagan interaktif, berfungsi dan terlihat sempurna di berbagai perangkat, baik itu browser desktop layar lebar, tablet, maupun smartphone.
 
-Pencarian & Filter Lanjutan: Alat bantu yang kuat di halaman data untuk navigasi yang cepat.
+---
 
-Pencarian Teks: Cari data secara instan berdasarkan nama sungai, spesies, atau nama nelayan.
+## Cara Menggunakan Aplikasi (Panduan Pengguna)
 
-Filter Rentang Tanggal: Tampilkan data hanya dari periode waktu tertentu (misalnya, 1 Juni 2025 hingga 31 Juli 2025).
+### 1. Registrasi & Login
 
-Ekspor ke Excel: Ekspor data yang telah difilter ke dalam format .xlsx dengan satu klik. Fitur ini sangat berguna untuk analisis offline, pembuatan laporan, atau berbagi data dengan pihak lain.
+* **Registrasi:** Untuk memulai, setiap pengguna baru harus membuat akun. Klik tombol **"Register"** di halaman login. Isi semua informasi yang diperlukan dengan cermat. Pastikan kata sandi Anda kuat (minimal 8 karakter). Nomor telepon harus sesuai dengan format Indonesia (diawali dengan `08`). Setelah berhasil, Anda akan secara otomatis masuk dan diarahkan ke dasbor utama.
+* **Login:** Jika Anda sudah memiliki akun, cukup masukkan email dan kata sandi Anda di halaman utama. Fungsionalitas "Lupa Kata Sandi" dapat ditambahkan di masa mendatang untuk memungkinkan pengguna mengatur ulang kata sandi mereka melalui email.
 
-QR Code Unik: Setiap entri data secara otomatis menghasilkan QR Code.
+### 2. Dasbor
 
-Akses Cepat: Pindai kode dengan perangkat mobile untuk langsung membuka halaman detail publik tanpa perlu login.
+Dasbor adalah pusat kendali visual Anda. Halaman ini dirancang untuk memberikan gambaran umum tingkat tinggi dari data yang terkumpul di sistem.
 
-Integrasi Fisik: QR Code dapat dicetak dan ditempel pada laporan fisik atau sampel untuk referensi silang yang mudah.
+* **Statistik Utama:** Di bagian atas, Anda akan melihat tiga kartu statistik yang menyoroti metrik paling penting. Angka-angka ini akan beranimasi saat halaman dimuat, memberikan umpan balik visual yang memuaskan.
+* **Bagan Interaktif:** Enam bagan utama memberikan wawasan mendalam. Arahkan kursor Anda ke elemen bagan (seperti batang atau irisan pai) untuk melihat *tooltip* dengan informasi detail, misalnya, jumlah pasti pada diagram batang atau persentase pada diagram lingkaran.
+* **Filter Dasbor:** Gunakan panel filter yang dapat diciutkan di bagian atas untuk menyaring data. Misalnya, jika Anda ingin menganalisis data penangkapan di "SUMATERA SELATAN" selama tahun "2025", cukup pilih opsi tersebut dan klik "Filter". Semua enam bagan akan diperbarui secara instan untuk mencerminkan kueri Anda. Klik **"Reset"** untuk menghapus semua filter dan kembali ke tampilan data global.
 
-Avatar Otomatis: Sistem avatar yang cerdas dan tidak memerlukan unggah foto. Avatar pengguna dibuat secara otomatis menggunakan inisial dari nama depan dan nama belakang mereka, memberikan sentuhan personal pada antarmuka.
+### 3. Halaman Data Sidat
 
-Antarmuka Responsif: Didesain dengan pendekatan mobile-first, aplikasi ini memberikan pengalaman pengguna yang konsisten dan optimal baik diakses melalui browser desktop, tablet, maupun smartphone.
+Ini adalah halaman di mana Anda dapat berinteraksi langsung dengan data mentah.
 
-Cara Menggunakan Aplikasi (Panduan Pengguna)
-1. Registrasi & Login
-Registrasi: Untuk memulai, setiap pengguna baru harus membuat akun. Klik tombol "Register" di halaman login. Isi semua informasi yang diperlukan. Pastikan kata sandi Anda minimal 8 karakter untuk keamanan. Nomor telepon harus sesuai dengan format Indonesia (diawali dengan 08). Setelah berhasil, Anda akan langsung masuk ke dasbor.
+* **Tabel Data:** Data disajikan dalam format tabel yang bersih. Jika jumlah data melebihi 15 entri per halaman, tautan paginasi (`1, 2, 3, ...`) akan muncul di bagian bawah, memungkinkan Anda untuk menavigasi ke halaman lain dengan mudah.
+* **Pencarian:** Ketik kata kunci di bilah pencarian dan tekan Enter. Tabel akan diperbarui secara dinamis untuk menampilkan hanya baris yang cocok dengan kueri Anda di kolom-kolom yang relevan.
+* **Filter Lanjutan:** Klik "Advanced Filters" untuk membuka opsi filter berdasarkan rentang tanggal. Ini memungkinkan Anda untuk mengisolasi data dari periode tertentu, yang sangat berguna untuk analisis tren.
+* **Ekspor:** Setelah Anda memfilter data sesuai keinginan, klik tombol **"Export to Excel"**. File `.xlsx` yang diunduh akan berisi data yang sama persis dengan yang Anda lihat di tabel, termasuk urutan dan filternya.
+* **QR Code:** Klik pada gambar QR Code kecil di setiap baris untuk melihat versi yang lebih besar di jendela pop-up, membuatnya lebih mudah untuk dipindai.
+* **Aksi:**
+    * **Edit (Ikon Pensil):** Mengarahkan Anda ke formulir edit yang sudah terisi dengan data dari baris tersebut, memungkinkan Anda untuk memperbaiki kesalahan atau memperbarui informasi dengan cepat.
+    * **Delete (Ikon Tong Sampah):** Memunculkan dialog konfirmasi yang modern (menggunakan SweetAlert) untuk memastikan Anda tidak sengaja menghapus data. Data hanya akan dihapus secara permanen jika Anda mengonfirmasi tindakan tersebut.
 
-Login: Jika Anda sudah memiliki akun, masukkan email dan kata sandi Anda di halaman utama. Jika Anda lupa kata sandi, fungsionalitas pemulihan dapat ditambahkan di masa mendatang.
+### 4. Manajemen Pengguna (Khusus Admin)
 
-2. Dasbor
-Dasbor adalah pusat kendali visual Anda. Halaman ini memberikan gambaran umum tentang data yang ada di sistem.
+* Sebagai admin, Anda akan melihat tautan **"User Management"** di bilah navigasi utama.
+* Halaman ini menampilkan daftar semua pengguna. Peran mereka saat ini ditandai dengan lencana berwarna untuk identifikasi cepat.
+* Untuk mengubah peran, cukup pilih peran baru dari menu dropdown dan klik **"Save"**. Halaman akan dimuat ulang dengan pesan sukses, dan peran pengguna akan segera diperbarui di seluruh sistem.
 
-Statistik Utama: Di bagian atas, Anda akan melihat tiga kartu statistik yang memberikan informasi cepat. Angka-angka ini akan beranimasi saat halaman dimuat, memberikan kesan dinamis.
+### 5. Manajemen Profil
 
-Bagan Interaktif: Enam bagan utama memberikan wawasan mendalam. Arahkan kursor ke bagian bagan untuk melihat detail lebih lanjut (misalnya, jumlah pasti pada diagram batang).
+* Akses halaman profil Anda dengan mengklik nama dan avatar Anda di pojok kanan atas, lalu pilih **"Profile"**.
+* **Update Profile Information:** Di sini Anda dapat mengubah detail pribadi Anda. Perhatikan bahwa alamat email tidak dapat diubah karena berfungsi sebagai pengenal unik akun Anda.
+* **Update Password:** Untuk keamanan, Anda harus memasukkan kata sandi saat ini dengan benar sebelum dapat mengatur kata sandi baru.
+* **Delete Account:** Ini adalah tindakan yang tidak dapat diurungkan. Sebuah dialog akan meminta Anda memasukkan kata sandi untuk mengonfirmasi penghapusan. Setelah dikonfirmasi, semua data Anda, termasuk catatan sidat yang telah Anda masukkan, akan dihapus selamanya dari database.
 
-Filter Dasbor: Gunakan panel filter di bagian atas untuk menyaring data yang ditampilkan di semua bagan. Misalnya, memilih "Tahun: 2025" dan "Bulan: Juli" akan memperbarui semua bagan untuk hanya menampilkan data dari Juli 2025. Klik "Reset" untuk kembali ke tampilan semua data.
-
-3. Halaman Data Sidat
-Ini adalah halaman utama untuk manajemen data mentah.
-
-Tabel Data: Data disajikan dalam format tabel yang bersih dan mudah dibaca. Jika data melebihi 15 entri, navigasi paginasi akan muncul di bagian bawah untuk berpindah antar halaman.
-
-Pencarian: Ketik kata kunci di bilah pencarian (misalnya, "Musi", "Anguilla bicolor", atau "Budi Santoso") dan tekan Enter untuk memfilter tabel secara instan.
-
-Filter Lanjutan: Klik "Advanced Filters" untuk membuka opsi filter berdasarkan rentang tanggal. Pilih tanggal mulai dan akhir, lalu klik "Apply".
-
-Ekspor: Setelah Anda memfilter data sesuai keinginan, klik tombol "Export to Excel". File .xlsx yang diunduh hanya akan berisi data yang sedang Anda lihat di tabel.
-
-QR Code: Klik pada gambar QR Code kecil di setiap baris untuk melihat versi yang lebih besar di jendela pop-up. Pindai kode ini dengan kamera ponsel Anda untuk membuka halaman detail.
-
-Aksi:
-
-Edit (Ikon Pensil): Membawa Anda ke formulir edit yang sudah terisi dengan data yang ada.
-
-Delete (Ikon Tong Sampah): Akan memunculkan dialog konfirmasi. Data hanya akan dihapus secara permanen jika Anda mengonfirmasi tindakan tersebut.
-
-4. Manajemen Pengguna (Khusus Admin)
-Sebagai admin, Anda akan melihat tautan "User Management" di bilah navigasi utama.
-
-Halaman ini menampilkan daftar semua pengguna terdaftar. Anda dapat melihat nama, email, dan peran mereka saat ini yang ditandai dengan lencana berwarna (misalnya, hijau untuk Admin, kuning untuk User).
-
-Untuk mengubah peran, cukup pilih peran baru dari menu dropdown di samping nama pengguna dan klik "Save". Perubahan akan segera berlaku.
-
-5. Manajemen Profil
-Akses halaman profil Anda dengan mengklik nama Anda di pojok kanan atas dan memilih "Profile".
-
-Update Profile Information: Di sini Anda dapat mengubah detail pribadi Anda. Perhatikan bahwa alamat email tidak dapat diubah karena berfungsi sebagai pengenal unik akun Anda.
-
-Update Password: Untuk keamanan, Anda harus memasukkan kata sandi saat ini sebelum dapat mengatur kata sandi baru.
-
-Delete Account: Ini adalah tindakan permanen. Sebuah dialog akan meminta Anda memasukkan kata sandi untuk mengonfirmasi penghapusan. Setelah dikonfirmasi, semua data Anda, termasuk catatan sidat yang telah Anda masukkan, akan dihapus selamanya.
-
-Cara Deploy Aplikasi
-Kebutuhan Server
-PHP >= 8.1: Versi bahasa pemrograman yang digunakan Laravel.
-
-Composer: Manajer dependensi untuk PHP, digunakan untuk menginstal paket-paket Laravel.
-
-Node.js & NPM: Dibutuhkan untuk mengelola dan membangun aset frontend (CSS & JavaScript).
-
-Database: MySQL atau MariaDB direkomendasikan.
-
-Web Server: Nginx atau Apache untuk melayani aplikasi.
-
-A. Instalasi di Lingkungan Lokal (Contoh: Laragon)
-Proses ini dirancang agar cepat dan mudah untuk memulai pengembangan.
-
-Clone Repository: Unduh kode sumber dari repositori Git.
-
-git clone [URL_REPOSITORY_ANDA] sidat-app
-cd sidat-app
-
-Install Dependencies: Instal semua paket PHP dan JavaScript yang diperlukan.
-
-composer install
-npm install
-
-Konfigurasi Lingkungan:
-
-Salin file konfigurasi contoh. File .env adalah tempat Anda menyimpan semua kredensial dan pengaturan spesifik lingkungan.
-
-copy .env.example .env
-
-Buat kunci enkripsi unik untuk aplikasi Anda. Ini sangat penting untuk keamanan sesi dan data terenkripsi.
-
-php artisan key:generate
-
-Buka file .env dan sesuaikan pengaturan database agar cocok dengan konfigurasi Laragon Anda.
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=sidat_app
-DB_USERNAME=root
-DB_PASSWORD=
-
-Migrasi Database:
-
-Gunakan alat bantu database Laragon (HeidiSQL/phpMyAdmin) untuk membuat database baru dengan nama sidat_app.
-
-Jalankan perintah migrasi untuk membuat struktur tabel di database Anda berdasarkan file migrasi di proyek.
-
-php artisan migrate
-
-Build Aset Frontend: Kompilasi file CSS dan JavaScript menjadi file tunggal yang siap digunakan di browser.
-
-npm run build
-
-Akses Aplikasi: Laragon secara otomatis membuat URL lokal yang mudah diingat. Cukup muat ulang Laragon dan akses http://sidat-app.test di browser Anda.
-
-B. Deploy ke Server Produksi
-Proses ini memerlukan perhatian lebih pada keamanan dan performa.
-
-Clone & Install: Lakukan langkah 1 & 2 seperti di atas pada server produksi Anda (misalnya, di dalam direktori /var/www/).
-
-Konfigurasi .env untuk Produksi:
-
-Isi detail koneksi database produksi Anda.
-
-Sangat Penting: Atur variabel berikut untuk menonaktifkan mode debug dan mengoptimalkan aplikasi untuk produksi.
-
-APP_ENV=production
-APP_DEBUG=false
-
-Jalankan Migrasi & Buat Kunci:
-
-php artisan key:generate
-php artisan migrate --force
-
-Flag --force diperlukan karena Laravel akan mendeteksi bahwa Anda berada di lingkungan produksi dan meminta konfirmasi.
-
-Optimasi Aplikasi:
-Perintah-perintah ini akan membuat file cache untuk konfigurasi, route, dan view, yang secara signifikan mengurangi waktu muat halaman. storage:link membuat tautan simbolis agar file yang diunggah di storage dapat diakses dari direktori public.
-
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan storage:link
-
-Konfigurasi Web Server (Contoh Nginx):
-
-Arahkan document root dari domain Anda ke direktori public proyek, bukan direktori root. Ini adalah praktik keamanan penting untuk mencegah akses langsung ke file sensitif.
-
-Contoh konfigurasi dasar Nginx:
-
-server {
-    listen 80;
-    server_name yourdomain.com;
-    root /var/www/sidat-app/public; # Arahkan ke folder public
-
-    index index.php index.html index.htm;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        # Sesuaikan dengan versi PHP-FPM Anda
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-    }
-
-    location ~ /\.ht {
-        deny all; # Blokir akses ke file .htaccess
-    }
-}
-
-Atur Hak Akses Folder:
-Web server (biasanya pengguna www-data) memerlukan izin untuk menulis ke direktori storage (untuk log, cache, dll.) dan bootstrap/cache.
-
-sudo chown -R $USER:www-data /var/www/sidat-app
-sudo chown -R www-data:www-data /var/www/sidat-app/storage
-sudo chown -R www-data:www-data /var/www/sidat-app/bootstrap/cache
-sudo chmod -R 775 /var/www/sidat-app/storage
-sudo chmod -R 775 /var/www/sidat-app/bootstrap/cache
-
-Setelah semua langkah ini selesai dan DNS domain Anda telah diarahkan ke IP server, aplikasi Anda akan aktif dan dapat diakses secara publik.
+---
+
+## Cara Deploy Aplikasi
+
+### Kebutuhan Server
+
+* **PHP >= 8.1:** Termasuk ekstensi umum seperti `BCMath`, `Ctype`, `Fileinfo`, `JSON`, `Mbstring`, `OpenSSL`, `PDO`, `Tokenizer`, `XML`, dan `GD` (untuk QR Code).
+* **Composer:** Versi terbaru direkomendasikan untuk manajemen dependensi PHP.
+* **Node.js & NPM:** Dibutuhkan untuk mengelola dan membangun aset frontend.
+* **Database:** MySQL 5.7+ atau MariaDB 10.3+ direkomendasikan.
+* **Web Server:** Nginx atau Apache. Nginx umumnya lebih disukai karena performanya.
+
+### A. Instalasi di Lingkungan Lokal (Contoh: Laragon)
+
+Proses ini dirancang untuk memulai pengembangan dengan cepat.
+
+1.  **Clone Repository:** Unduh kode sumber dari repositori Git ke direktori `www` Laragon Anda.
+    ```bash
+    git clone https://github.com/hutrisemendawai/sidaco.git sidat-app
+    cd sidat-app
+    ```
+
+2.  **Install Dependencies:** `composer install` mengunduh semua pustaka PHP yang diperlukan (seperti Laravel itu sendiri), sementara `npm install` mengunduh semua pustaka JavaScript (seperti Alpine.js dan Tailwind CSS).
+    ```bash
+    composer install
+    npm install
+    ```
+
+3.  **Konfigurasi Lingkungan:**
+    * Salin file konfigurasi contoh. File `.env` berisi informasi sensitif dan tidak boleh dimasukkan ke dalam Git.
+        ```bash
+        copy .env.example .env
+        ```
+    * Buat kunci enkripsi unik.
+        ```bash
+        php artisan key:generate
+        ```
+    * Buka file `.env` dan sesuaikan pengaturan database.
+        ```dotenv
+        DB_CONNECTION=mysql
+        DB_HOST=127.0.0.1
+        DB_PORT=3306
+        DB_DATABASE=sidat_app
+        DB_USERNAME=root
+        DB_PASSWORD=
+        ```
+
+4.  **Migrasi Database:**
+    * Gunakan alat bantu database Laragon untuk membuat database baru.
+    * Jalankan perintah migrasi untuk membangun semua tabel yang didefinisikan dalam direktori `database/migrations`.
+        ```bash
+        php artisan migrate
+        ```
+
+5.  **Build Aset Frontend:** Perintah ini akan mengkompilasi dan mem-bundle semua file CSS dan JavaScript Anda menjadi file tunggal yang dioptimalkan untuk produksi.
+    ```bash
+    npm run build
+    ```
+
+6.  **Akses Aplikasi:** Muat ulang Laragon untuk mendaftarkan host virtual baru, lalu akses `http://sidat-app.test` di browser Anda.
+
+### B. Deploy ke Server Produksi
+
+Proses ini memerlukan langkah-langkah tambahan untuk memastikan keamanan dan performa.
+
+1.  **Clone & Install:** Lakukan langkah 1 & 2 di atas pada server Anda (misalnya, di `/var/www/sidat-app`).
+
+2.  **Konfigurasi `.env` untuk Produksi:**
+    * Isi detail koneksi database produksi Anda.
+    * **Sangat Penting:** Atur variabel berikut:
+        ```dotenv
+        APP_ENV=production
+        APP_DEBUG=false
+        ```
+        Menonaktifkan debug sangat penting untuk keamanan agar tidak membocorkan informasi sensitif jika terjadi error.
+
+3.  **Jalankan Migrasi & Buat Kunci:**
+    ```bash
+    php artisan key:generate
+    php artisan migrate --force
+    ```
+
+4.  **Optimasi Aplikasi:**
+    Perintah-perintah ini secara drastis meningkatkan performa dengan membuat *cache*.
+    ```bash
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    php artisan storage:link
+    ```
+    Setiap kali Anda mengubah file konfigurasi atau route, Anda harus menjalankan kembali perintah ini.
+
+5.  **Konfigurasi Web Server (Contoh Nginx):**
+    * Arahkan *document root* ke direktori `public`.
+    * Contoh konfigurasi Nginx yang lebih lengkap:
+        ```nginx
+        server {
+            listen 80;
+            server_name yourdomain.com;
+            root /var/www/sidat-app/public;
+     
+            add_header X-Frame-Options "SAMEORIGIN";
+            add_header X-Content-Type-Options "nosniff";
+     
+            index index.php index.html index.htm;
+     
+            location / {
+                try_files $uri $uri/ /index.php?$query_string;
+            }
+     
+            location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            }
+     
+            location ~ /\.ht {
+                deny all;
+            }
+        }
+        ```
+
+6.  **Atur Hak Akses Folder:**
+    Ini adalah langkah keamanan yang krusial. Web server perlu izin tulis ke beberapa direktori untuk berfungsi dengan baik.
+    ```bash
+    sudo chown -R $USER:www-data /var/www/sidat-app
+    sudo find /var/www/sidat-app -type f -exec chmod 664 {} \;    
+    sudo find /var/www/sidat-app -type d -exec chmod 775 {} \;
+    sudo chown -R www-data:www-data /var/www/sidat-app/storage
+    sudo chown -R www-data:www-data /var/www/sidat-app/bootstrap/cache
+    ```
+
+Setelah semua langkah ini selesai, aplikasi Anda akan aktif dan berjalan dengan aman dan efisien di server produksi.
