@@ -13,9 +13,8 @@ Aplikasi ini dirancang secara khusus untuk memenuhi kebutuhan berbagai pemangku 
     * **Admin:** Peran dengan hak akses tertinggi. Admin memiliki semua kemampuan seorang User, ditambah dengan akses penuh untuk melihat dan mengelola data dari *semua* pengguna. Ini penting untuk pengawasan, validasi data, dan analisis agregat. Selain itu, admin memiliki wewenang untuk mengelola peran pengguna lain, mempromosikan User menjadi Admin atau sebaliknya.
 
 * **Dasbor Analitik Interaktif:** Halaman utama setelah login yang berfungsi sebagai pusat komando visual, menyajikan data dalam format yang mudah dicerna.
-    * **Kartu Statistik Utama:** Tiga kartu di bagian atas memberikan ringkasan data kunci secara *real-time*, seperti total entri yang tercatat, total berat tangkapan dalam kilogram untuk tahun berjalan, dan jumlah nelayan unik yang telah menyumbangkan data. Angka-angka ini disajikan dengan animasi hitung yang menarik saat halaman dimuat.
     * **6 Bagan Dinamis:** Visualisasi data yang kaya untuk analisis mendalam, termasuk grafik garis untuk melacak tren tangkapan bulanan, diagram lingkaran (*doughnut chart*) untuk melihat komposisi spesies yang paling dominan, dan diagram batang untuk membandingkan jumlah data antar provinsi, produktivitas nelayan, dan lainnya.
-    * **Filter Global:** Sebuah panel filter yang dapat diciutkan memungkinkan pengguna untuk menyaring data di seluruh dasbor secara bersamaan berdasarkan Tahun, Bulan, Provinsi, atau Spesies tertentu. Ini memungkinkan analisis yang sangat spesifik, misalnya, "tampilkan data untuk spesies *Anguilla marmorata* di Sumatera Selatan selama kuartal ketiga tahun 2025."
+    * **Filter Global:** Sebuah panel filter yang dapat diciutkan memungkinkan pengguna untuk menyaring data di bagan.
 
 * **Manajemen Data (CRUD):** Fungsionalitas penuh untuk mengelola siklus hidup setiap catatan data sidat.
     * **Create:** Formulir input yang terstruktur dengan validasi data di setiap kolom untuk memastikan integritas dan konsistensi data yang dimasukkan.
@@ -50,15 +49,14 @@ Aplikasi ini dirancang secara khusus untuk memenuhi kebutuhan berbagai pemangku 
 
 Dasbor adalah pusat kendali visual Anda. Halaman ini dirancang untuk memberikan gambaran umum tingkat tinggi dari data yang terkumpul di sistem.
 
-* **Statistik Utama:** Di bagian atas, Anda akan melihat tiga kartu statistik yang menyoroti metrik paling penting. Angka-angka ini akan beranimasi saat halaman dimuat, memberikan umpan balik visual yang memuaskan.
 * **Bagan Interaktif:** Enam bagan utama memberikan wawasan mendalam. Arahkan kursor Anda ke elemen bagan (seperti batang atau irisan pai) untuk melihat *tooltip* dengan informasi detail, misalnya, jumlah pasti pada diagram batang atau persentase pada diagram lingkaran.
-* **Filter Dasbor:** Gunakan panel filter yang dapat diciutkan di bagian atas untuk menyaring data. Misalnya, jika Anda ingin menganalisis data penangkapan di "SUMATERA SELATAN" selama tahun "2025", cukup pilih opsi tersebut dan klik "Filter". Semua enam bagan akan diperbarui secara instan untuk mencerminkan kueri Anda. Klik **"Reset"** untuk menghapus semua filter dan kembali ke tampilan data global.
+* **Filter Dasbor:** Gunakan panel filter yang dapat diciutkan di bagian atas untuk menyaring data.
 
 ### 3. Halaman Data Sidat
 
 Ini adalah halaman di mana Anda dapat berinteraksi langsung dengan data mentah.
 
-* **Tabel Data:** Data disajikan dalam format tabel yang bersih. Jika jumlah data melebihi 15 entri per halaman, tautan paginasi (`1, 2, 3, ...`) akan muncul di bagian bawah, memungkinkan Anda untuk menavigasi ke halaman lain dengan mudah.
+* **Tabel Data:** Data disajikan dalam format tabel yang bersih. Jika jumlah data melebihi entri per halaman, tautan paginasi (`1, 2, 3, ...`) akan muncul di bagian bawah, memungkinkan Anda untuk menavigasi ke halaman lain dengan mudah.
 * **Pencarian:** Ketik kata kunci di bilah pencarian dan tekan Enter. Tabel akan diperbarui secara dinamis untuk menampilkan hanya baris yang cocok dengan kueri Anda di kolom-kolom yang relevan.
 * **Filter Lanjutan:** Klik "Advanced Filters" untuk membuka opsi filter berdasarkan rentang tanggal. Ini memungkinkan Anda untuk mengisolasi data dari periode tertentu, yang sangat berguna untuk analisis tren.
 * **Ekspor:** Setelah Anda memfilter data sesuai keinginan, klik tombol **"Export to Excel"**. File `.xlsx` yang diunduh akan berisi data yang sama persis dengan yang Anda lihat di tabel, termasuk urutan dan filternya.
