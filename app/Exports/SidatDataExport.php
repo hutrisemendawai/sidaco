@@ -18,7 +18,7 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
         $this->request = $request;
     }
 
-    
+
     public function query()
     {
         $query = SidatData::query()->with('user');
@@ -31,8 +31,8 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
             $searchTerm = $this->request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('river', 'like', "%{$searchTerm}%")
-                  ->orWhere('species_name', 'like', "%{$searchTerm}%")
-                  ->orWhere('fisherman_name', 'like', "%{$searchTerm}%");
+                    ->orWhere('species_name', 'like', "%{$searchTerm}%")
+                    ->orWhere('fisher_name', 'like', "%{$searchTerm}%");
             });
         }
 
@@ -46,7 +46,7 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
         return $query->latest('date');
     }
 
-    
+
     public function headings(): array
     {
         return [
@@ -61,7 +61,7 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
             'River',
             'Stage',
             'Type',
-            'Fisherman Name',
+            'fisher Name',
             'Type of Fishing Gear',
             'Number of Fishing Gear',
             'Species Name',
@@ -86,7 +86,7 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
         ];
     }
 
-    
+
     public function map($data): array
     {
         return [
@@ -101,7 +101,7 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
             $data->river,
             $data->stage,
             $data->type,
-            $data->fisherman_name,
+            $data->fisher_name,
             $data->type_of_fishing_gear,
             $data->number_of_fishing_gear,
             $data->species_name,
