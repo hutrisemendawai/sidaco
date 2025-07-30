@@ -18,7 +18,7 @@
                     </x-nav-link>
 
                     <x-nav-link :href="route('sidat.index')" :active="request()->routeIs('sidat.*')">
-                        {{ __('Sidat Data') }}
+                        {{ __('Tropical Anguillid Eel Data') }}
                     </x-nav-link>
 
                     @if(Auth::user()->isAdmin())

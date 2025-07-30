@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Sidat Data') }}
+            {{ __('Edit Tropical Anguillid Eel Data') }}
         </h2>
     </x-slot>
 
@@ -76,20 +76,20 @@
                                     <x-text-input id="stage" class="block mt-1 w-full" type="text" name="stage" :value="old('stage', $sidat->stage)" required />
                                 </div>
 
-                                <!-- Type -->
-                                <div class="mt-4">
-                                    <x-input-label for="type" :value="__('Type')" />
-                                    <x-text-input id="type" class="block mt-1 w-full" type="text" name="type" :value="old('type', $sidat->type)" required />
-                                </div>
-
                                 <!-- Fisherman Name -->
                                 <div class="mt-4">
-                                    <x-input-label for="fisherman_name" :value="__('Fisherman Name')" />
-                                    <x-text-input id="fisherman_name" class="block mt-1 w-full" type="text" name="fisherman_name" :value="old('fisherman_name', $sidat->fisherman_name)" required />
+                                    <x-input-label for="fisher_name" :value="__('Fisher Name')" />
+                                    <x-text-input id="fisher_name" class="block mt-1 w-full" type="text" name="fisher_name" :value="old('fisher_name', $sidat->fisher_name)" required />
                                 </div>
-
-                                <!-- Type Of Fishing Gear -->
+                                <!-- Number of Fishing Gear -->
                                 <div class="mt-4">
+                                    <x-input-label for="number_of_fisher" :value="__('Number of Fisher')" />
+                                    <x-text-input id="number_of_fisher" class="block mt-1 w-full" type="number" name="number_of_fishing_gear" :value="old('number_of_fisher', $sidat->number_of_fisher)" required />
+                                </div>
+                            </div>
+                            <div>
+                                <!-- Type Of Fishing Gear -->
+                                <div>
                                     <x-input-label for="type_of_fishing_gear" :value="__('Type Of Fishing Gear')" />
                                     <x-text-input id="type_of_fishing_gear" class="block mt-1 w-full" type="text" name="type_of_fishing_gear" :value="old('type_of_fishing_gear', $sidat->type_of_fishing_gear)" required />
                                 </div>
@@ -123,89 +123,6 @@
                                     <x-input-label for="price_per_kg" :value="__('Price (per kg)')" />
                                     <x-text-input id="price_per_kg" class="block mt-1 w-full" type="number" step="0.01" name="price_per_kg" :value="old('price_per_kg', $sidat->price_per_kg)" required />
                                 </div>
-
-                                <!-- Total Weight (per Fisher) -->
-                                <div class="mt-4">
-                                    <x-input-label for="total_weight_per_fisher" :value="__('Total Weight (per Fisher)')" />
-                                    <x-text-input id="total_weight_per_fisher" class="block mt-1 w-full" type="number" step="0.01" name="total_weight_per_fisher" :value="old('total_weight_per_fisher', $sidat->total_weight_per_fisher)" required />
-                                </div>
-
-                                <!-- Estimate Number by Fisher (per Day) -->
-                                <div class="mt-4">
-                                    <x-input-label for="estimate_number_by_fisher_per_day" :value="__('Estimate Number by Fisher (per Day)')" />
-                                    <x-text-input id="estimate_number_by_fisher_per_day" class="block mt-1 w-full" type="number" name="estimate_number_by_fisher_per_day" :value="old('estimate_number_by_fisher_per_day', $sidat->estimate_number_by_fisher_per_day)" required />
-                                </div>
-                            </div>
-
-                            <!-- Right Column -->
-                            <div>
-                                <!-- Elver -->
-                                <h3 class="font-semibold text-lg text-gray-800 border-b pb-2 mb-4">Elver</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <x-input-label for="total_weight_elver_kg" :value="__('Total Weight (kg)')" />
-                                        <x-text-input id="total_weight_elver_kg" class="block mt-1 w-full" type="number" step="0.01" name="total_weight_elver_kg" :value="old('total_weight_elver_kg', $sidat->total_weight_elver_kg)" />
-                                    </div>
-                                    <div>
-                                        <x-input-label for="price_elver" :value="__('Price')" />
-                                        <x-text-input id="price_elver" class="block mt-1 w-full" type="number" step="0.01" name="price_elver" :value="old('price_elver', $sidat->price_elver)" />
-                                    </div>
-                                    <div class="col-span-2">
-                                        <x-input-label for="amount_individual_elver_size" :value="__('Amount of Individual Size')" />
-                                        <x-text-input id="amount_individual_elver_size" class="block mt-1 w-full" type="number" name="amount_individual_elver_size" :value="old('amount_individual_elver_size', $sidat->amount_individual_elver_size)" />
-                                    </div>
-                                </div>
-
-                                <!-- PK -->
-                                <h3 class="font-semibold text-lg text-gray-800 border-b pb-2 my-4">PK</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <x-input-label for="total_weight_pk_kg" :value="__('Total Weight (kg)')" />
-                                        <x-text-input id="total_weight_pk_kg" class="block mt-1 w-full" type="number" step="0.01" name="total_weight_pk_kg" :value="old('total_weight_pk_kg', $sidat->total_weight_pk_kg)" />
-                                    </div>
-                                    <div>
-                                        <x-input-label for="price_pk" :value="__('Price')" />
-                                        <x-text-input id="price_pk" class="block mt-1 w-full" type="number" step="0.01" name="price_pk" :value="old('price_pk', $sidat->price_pk)" />
-                                    </div>
-                                    <div class="col-span-2">
-                                        <x-input-label for="amount_individual_pk_size" :value="__('Amount of Individual Size')" />
-                                        <x-text-input id="amount_individual_pk_size" class="block mt-1 w-full" type="number" name="amount_individual_pk_size" :value="old('amount_individual_pk_size', $sidat->amount_individual_pk_size)" />
-                                    </div>
-                                </div>
-
-                                <!-- PB -->
-                                <h3 class="font-semibold text-lg text-gray-800 border-b pb-2 my-4">PB</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <x-input-label for="total_weight_pb_kg" :value="__('Total Weight (kg)')" />
-                                        <x-text-input id="total_weight_pb_kg" class="block mt-1 w-full" type="number" step="0.01" name="total_weight_pb_kg" :value="old('total_weight_pb_kg', $sidat->total_weight_pb_kg)" />
-                                    </div>
-                                    <div>
-                                        <x-input-label for="price_pb" :value="__('Price')" />
-                                        <x-text-input id="price_pb" class="block mt-1 w-full" type="number" step="0.01" name="price_pb" :value="old('price_pb', $sidat->price_pb)" />
-                                    </div>
-                                    <div class="col-span-2">
-                                        <x-input-label for="amount_individual_pb_size" :value="__('Amount of Individual Size')" />
-                                        <x-text-input id="amount_individual_pb_size" class="block mt-1 w-full" type="number" name="amount_individual_pb_size" :value="old('amount_individual_pb_size', $sidat->amount_individual_pb_size)" />
-                                    </div>
-                                </div>
-
-                                <!-- Fingerling -->
-                                <h3 class="font-semibold text-lg text-gray-800 border-b pb-2 my-4">Fingerling</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <x-input-label for="total_weight_fingerling" :value="__('Total Weight (kg)')" />
-                                        <x-text-input id="total_weight_fingerling" class="block mt-1 w-full" type="number" step="0.01" name="total_weight_fingerling" :value="old('total_weight_fingerling', $sidat->total_weight_fingerling)" />
-                                    </div>
-                                    <div>
-                                        <x-input-label for="price_fingerling" :value="__('Price')" />
-                                        <x-text-input id="price_fingerling" class="block mt-1 w-full" type="number" step="0.01" name="price_fingerling" :value="old('price_fingerling', $sidat->price_fingerling)" />
-                                    </div>
-                                    <div class="col-span-2">
-                                        <x-input-label for="amount_individual_fingerling_size" :value="__('Amount of Individual Size')" />
-                                        <x-text-input id="amount_individual_fingerling_size" class="block mt-1 w-full" type="number" name="amount_individual_fingerling_size" :value="old('amount_individual_fingerling_size', $sidat->amount_individual_fingerling_size)" />
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -225,93 +142,105 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const countrySelect = document.getElementById('country');
-            const provinceSelect = document.getElementById('province');
-            const districtSelect = document.getElementById('district');
+document.addEventListener('DOMContentLoaded', function () {
+    const countrySelect = document.getElementById('country');
+    const provinceSelect = document.getElementById('province');
+    const districtSelect = document.getElementById('district');
 
-            
-            const existingData = {
-                country: "{{ old('country', $sidat->country) }}",
-                province: "{{ old('province', $sidat->province) }}",
-                district: "{{ old('district', $sidat->district) }}"
-            };
+    const existingData = {
+        country: "{{ old('country', $sidat->country) }}",
+        province: "{{ old('province', $sidat->province) }}",
+        district: "{{ old('district', $sidat->district) }}"
+    };
 
-            const countryApiUrl = 'https:
-            const provinceApiBaseUrl = 'https:
+    const provinceApiUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json';
+    const districtApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
 
-            
-            const indonesiaOption = document.createElement('option');
-            indonesiaOption.value = 'Indonesia';
-            indonesiaOption.textContent = 'Indonesia';
-            countrySelect.appendChild(indonesiaOption);
-            countrySelect.value = existingData.country;
+    // Tambahkan pilihan negara (manual karena hanya Indonesia)
+    const indonesiaOption = document.createElement('option');
+    indonesiaOption.value = 'Indonesia';
+    indonesiaOption.textContent = 'Indonesia';
+    countrySelect.appendChild(indonesiaOption);
+    countrySelect.value = existingData.country;
 
-            
-            function fetchProvinces() {
-                return fetch(countryApiUrl)
-                    .then(response => response.json())
-                    .then(provinces => {
-                        provinceSelect.innerHTML = '<option value="">Select Province</option>';
-                        let selectedProvinceId = null;
-                        provinces.forEach(province => {
-                            const option = document.createElement('option');
-                            option.value = province.name;
-                            option.dataset.id = province.id;
-                            option.textContent = province.name;
-                            if (province.name === existingData.province) {
-                                option.selected = true;
-                                selectedProvinceId = province.id;
-                            }
-                            provinceSelect.appendChild(option);
-                        });
-                        return selectedProvinceId; 
-                    });
-            }
+    function fetchProvinces() {
+        return fetch(provinceApiUrl)
+            .then(response => response.json())
+            .then(provinces => {
+                provinceSelect.innerHTML = '<option value="">Select Province</option>';
+                let selectedProvinceId = null;
 
-            
-            function fetchDistricts(provinceId) {
-                districtSelect.innerHTML = '<option value="">Loading...</option>';
-                if (!provinceId) {
-                    districtSelect.innerHTML = '<option value="">Select Province First</option>';
-                    return;
-                }
+                provinces.forEach(province => {
+                    const option = document.createElement('option');
+                    option.value = province.name;
+                    option.dataset.id = province.id;
+                    option.textContent = province.name;
 
-                return fetch(`${provinceApiBaseUrl}${provinceId}.json`)
-                    .then(response => response.json())
-                    .then(districts => {
-                        districtSelect.innerHTML = '<option value="">Select District/City</option>';
-                        districts.forEach(district => {
-                            const option = document.createElement('option');
-                            option.value = district.name;
-                            option.textContent = district.name;
-                            if (district.name === existingData.district) {
-                                option.selected = true;
-                            }
-                            districtSelect.appendChild(option);
-                        });
-                    });
-            }
-
-            
-            provinceSelect.addEventListener('change', () => {
-                const selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
-                fetchDistricts(selectedProvince.dataset.id);
-            });
-
-            
-            async function initializeLocation() {
-                try {
-                    const provinceId = await fetchProvinces();
-                    if (provinceId) {
-                        await fetchDistricts(provinceId);
+                    // Cocokkan nama provinsi dengan existingData (tanpa peduli huruf besar/kecil)
+                    if (province.name.toLowerCase() === existingData.province.toLowerCase()) {
+                        option.selected = true;
+                        selectedProvinceId = province.id;
                     }
-                } catch (error) {
-                    console.error('Error initializing location dropdowns:', error);
-                }
-            }
 
-            initializeLocation();
-        });
-    </script>
+                    provinceSelect.appendChild(option);
+                });
+
+                return selectedProvinceId;
+            });
+    }
+
+    function fetchDistricts(provinceId) {
+        districtSelect.innerHTML = '<option value="">Loading...</option>';
+
+        if (!provinceId) {
+            districtSelect.innerHTML = '<option value="">Select Province First</option>';
+            return;
+        }
+
+        return fetch(`${districtApiBaseUrl}${provinceId}.json`)
+            .then(response => response.json())
+            .then(districts => {
+                districtSelect.innerHTML = '<option value="">Select District/City</option>';
+
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.name;
+                    option.textContent = district.name;
+
+                    // Cocokkan nama kabupaten/kota
+                    if (district.name.toLowerCase() === existingData.district.toLowerCase()) {
+                        option.selected = true;
+                    }
+
+                    districtSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching districts:', error);
+                districtSelect.innerHTML = '<option value="">Failed to load districts</option>';
+            });
+    }
+
+    provinceSelect.addEventListener('change', () => {
+        const selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
+        if (selectedProvince && selectedProvince.dataset.id) {
+            fetchDistricts(selectedProvince.dataset.id);
+        }
+    });
+
+    async function initializeLocation() {
+        try {
+            const provinceId = await fetchProvinces();
+            if (provinceId) {
+                await fetchDistricts(provinceId);
+            }
+        } catch (error) {
+            console.error('Error initializing location dropdowns:', error);
+        }
+    }
+
+    initializeLocation();
+});
+</script>
+
 </x-app-layout>
