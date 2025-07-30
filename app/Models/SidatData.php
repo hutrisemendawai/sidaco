@@ -32,28 +32,13 @@ class SidatData extends Model
         'district',
         'river',
         'stage',
-        'type',
-        'fisherman_name',
+        'fisher_name',
         'type_of_fishing_gear',
         'number_of_fishing_gear',
         'species_name',
         'operation_time',
         'total_weight_per_day',
         'price_per_kg',
-        'total_weight_per_fisher',
-        'estimate_number_by_fisher_per_day',
-        'total_weight_elver_kg',
-        'price_elver',
-        'total_weight_pk_kg',
-        'price_pk',
-        'total_weight_pb_kg',
-        'price_pb',
-        'total_weight_fingerling',
-        'price_fingerling',
-        'amount_individual_elver_size',
-        'amount_individual_pk_size',
-        'amount_individual_pb_size',
-        'amount_individual_fingerling_size',
     ];
 
     /**
@@ -66,7 +51,7 @@ class SidatData extends Model
     ];
 
     /**
-     * Get the user that owns the sidat data.
+     * Get the user that owns the Tropical Anguillid Eel Data.
      */
     public function user()
     {

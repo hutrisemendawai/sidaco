@@ -51,7 +51,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the sidat data for the user.
+     * Get the Tropical Anguillid Eel Data for the user.
      */
     public function sidatData()
     {

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Sidat Data Management') }}
+            {{ __('Tropical Anguillid Eel Data Management') }}
         </h2>
     </x-slot>
 
@@ -50,7 +50,7 @@
                                                 @php
                                                     $qrUrl = route('sidat.public.show', $data->id);
                                                     $logoPath = public_path('images/seafdeclogo.png');
-                                                    
+
                                                     if (file_exists($logoPath) && is_readable($logoPath)) {
                                                         $largeQrCode = QrCode::size(250)->merge($logoPath, .25, true)->generate($qrUrl);
                                                         $smallQrCode = QrCode::size(40)->merge($logoPath, .3, true)->generate($qrUrl);
@@ -66,7 +66,7 @@
                                             @if(Auth::user()->isAdmin())<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $data->user->first_name ?? 'N/A' }}</td>@endif
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->date->format('d M Y') }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->river }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->fisherman_name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->fisher_name }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->species_name }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($data->total_weight_per_day, 2) }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -82,7 +82,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="mt-6 bg-white px-4 py-3 rounded-lg shadow">{{ $sidatData->links() }}</div>
                     </div>
                 </div>

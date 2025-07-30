@@ -27,8 +27,8 @@ class SidatDataController extends Controller
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('river', 'like', "%{$searchTerm}%")
-                  ->orWhere('species_name', 'like', "%{$searchTerm}%")
-                  ->orWhere('fisherman_name', 'like', "%{$searchTerm}%");
+                    ->orWhere('species_name', 'like', "%{$searchTerm}%")
+                    ->orWhere('fisher_name', 'like', "%{$searchTerm}%");
             });
         }
 
@@ -74,28 +74,13 @@ class SidatDataController extends Controller
             'district' => ['required', 'string', 'max:255'],
             'river' => ['required', 'string', 'max:255'],
             'stage' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-            'fisherman_name' => ['required', 'string', 'max:255'],
+            'fisher_name' => ['required', 'string', 'max:255'],
             'type_of_fishing_gear' => ['required', 'string', 'max:255'],
             'number_of_fishing_gear' => ['required', 'integer', 'min:0'],
             'species_name' => ['required', 'string', 'max:255'],
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],
-            'total_weight_per_fisher' => ['required', 'numeric', 'min:0'],
-            'estimate_number_by_fisher_per_day' => ['required', 'integer', 'min:0'],
-            'total_weight_elver_kg' => ['nullable', 'numeric', 'min:0'],
-            'price_elver' => ['nullable', 'numeric', 'min:0'],
-            'total_weight_pk_kg' => ['nullable', 'numeric', 'min:0'],
-            'price_pk' => ['nullable', 'numeric', 'min:0'],
-            'total_weight_pb_kg' => ['nullable', 'numeric', 'min:0'],
-            'price_pb' => ['nullable', 'numeric', 'min:0'],
-            'total_weight_fingerling' => ['nullable', 'numeric', 'min:0'],
-            'price_fingerling' => ['nullable', 'numeric', 'min:0'],
-            'amount_individual_elver_size' => ['nullable', 'integer', 'min:0'],
-            'amount_individual_pk_size' => ['nullable', 'integer', 'min:0'],
-            'amount_individual_pb_size' => ['nullable', 'integer', 'min:0'],
-            'amount_individual_fingerling_size' => ['nullable', 'integer', 'min:0'],
         ]);
 
         $date = Carbon::parse($validatedData['date']);
@@ -105,7 +90,7 @@ class SidatDataController extends Controller
 
         SidatData::create($validatedData);
 
-        return redirect()->route('sidat.index')->with('success', 'Sidat data added successfully!');
+        return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data added successfully!');
     }
 
     /**
@@ -154,28 +139,13 @@ class SidatDataController extends Controller
             'district' => ['required', 'string', 'max:255'],
             'river' => ['required', 'string', 'max:255'],
             'stage' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-            'fisherman_name' => ['required', 'string', 'max:255'],
+            'fisher_name' => ['required', 'string', 'max:255'],
             'type_of_fishing_gear' => ['required', 'string', 'max:255'],
             'number_of_fishing_gear' => ['required', 'integer', 'min:0'],
             'species_name' => ['required', 'string', 'max:255'],
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],
-            'total_weight_per_fisher' => ['required', 'numeric', 'min:0'],
-            'estimate_number_by_fisher_per_day' => ['required', 'integer', 'min:0'],
-            'total_weight_elver_kg' => ['nullable', 'numeric', 'min:0'],
-            'price_elver' => ['nullable', 'numeric', 'min:0'],
-            'total_weight_pk_kg' => ['nullable', 'numeric', 'min:0'],
-            'price_pk' => ['nullable', 'numeric', 'min:0'],
-            'total_weight_pb_kg' => ['nullable', 'numeric', 'min:0'],
-            'price_pb' => ['nullable', 'numeric', 'min:0'],
-            'total_weight_fingerling' => ['nullable', 'numeric', 'min:0'],
-            'price_fingerling' => ['nullable', 'numeric', 'min:0'],
-            'amount_individual_elver_size' => ['nullable', 'integer', 'min:0'],
-            'amount_individual_pk_size' => ['nullable', 'integer', 'min:0'],
-            'amount_individual_pb_size' => ['nullable', 'integer', 'min:0'],
-            'amount_individual_fingerling_size' => ['nullable', 'integer', 'min:0'],
         ]);
 
         $date = Carbon::parse($validatedData['date']);
@@ -184,7 +154,7 @@ class SidatDataController extends Controller
 
         $sidat->update($validatedData);
 
-        return redirect()->route('sidat.index')->with('success', 'Sidat data updated successfully!');
+        return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data updated successfully!');
     }
 
     /**
@@ -198,6 +168,6 @@ class SidatDataController extends Controller
 
         $sidat->delete();
 
-        return redirect()->route('sidat.index')->with('success', 'Sidat data deleted successfully!');
+        return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data deleted successfully!');
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sidat Data Details - ID: {{ $sidat->id }}</title>
+    <title>Tropical Anguillid Eel Data Details - ID: {{ $sidat->id }}</title>
     <link rel="icon" href="{{ asset('images/seafdeclogo.png') }}" type="image/png"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -20,7 +20,7 @@
         <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
             <div class="p-6 bg-sky-600 text-white flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold">Sidat Data Details</h1>
+                    <h1 class="text-2xl font-bold">Tropical Anguillid Eel Data Details</h1>
                     <p class="text-sm opacity-90">Record ID: {{ $sidat->id }}</p>
                 </div>
                 <img src="{{ asset('images/seafdeclogo.png') }}" alt="Logo" class="h-12 w-auto" />
@@ -28,7 +28,7 @@
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                     <div class="detail-row py-2"><span class="detail-label">Date:</span><span class="detail-value float-right">{{ $sidat->date->format('d F Y') }}</span></div>
-                    <div class="detail-row py-2"><span class="detail-label">Fisherman:</span><span class="detail-value float-right">{{ $sidat->fisherman_name }}</span></div>
+                    <div class="detail-row py-2"><span class="detail-label">Fisherman:</span><span class="detail-value float-right">{{ $sidat->fisher_name }}</span></div>
                     <div class="detail-row py-2"><span class="detail-label">Country:</span><span class="detail-value float-right">{{ $sidat->country }}</span></div>
                     <div class="detail-row py-2"><span class="detail-label">Province:</span><span class="detail-value float-right">{{ $sidat->province }}</span></div>
                     <div class="detail-row py-2"><span class="detail-label">District:</span><span class="detail-value float-right">{{ $sidat->district }}</span></div>
