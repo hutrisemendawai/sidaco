@@ -53,9 +53,17 @@
 
                                 <!-- District -->
                                 <div class="mt-4">
-                                    <x-input-label for="district" :value="__('District/City')" />
+                                    <x-input-label for="regency" :value="__('Regency')" />
+                                    <select id="regency" name="regency" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                        <option value="">Select Regency/City</option>
+                                    </select>
+                                </div>
+
+                                <!-- District -->
+                                <div class="mt-4">
+                                    <x-input-label for="district" :value="__('District')" />
                                     <select id="district" name="district" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                                        <option value="">Select District/City</option>
+                                        <option value="">Select District</option>
                                     </select>
                                 </div>
 
@@ -80,6 +88,11 @@
                                 <div class="mt-4">
                                     <x-input-label for="fisher_name" :value="__('Fisher Name')" />
                                     <x-text-input id="fisher_name" class="block mt-1 w-full" type="text" name="fisher_name" :value="old('fisher_name', $sidat->fisher_name)" required />
+                                </div>
+                                 <!-- Number of Fishing Gear -->
+                                <div class="mt-4">
+                                    <x-input-label for="number_of_fisher" :value="__('Number of Fisher')" />
+                                    <x-text-input id="number_of_fisher" class="block mt-1 w-full" type="number" name="number_of_fisher" :value="old('number_of_fisher', $sidat->number_of_fisher)" required />
                                 </div>
                             </div>
                             <div>
@@ -140,16 +153,19 @@
 document.addEventListener('DOMContentLoaded', function () {
     const countrySelect = document.getElementById('country');
     const provinceSelect = document.getElementById('province');
+    const regencySelect = document.getElementById('regency');
     const districtSelect = document.getElementById('district');
 
     const existingData = {
         country: "{{ old('country', $sidat->country) }}",
         province: "{{ old('province', $sidat->province) }}",
+        regency: "{{ old('regency', $sidat->regency) }}",
         district: "{{ old('district', $sidat->district) }}"
     };
 
     const provinceApiUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json';
-    const districtApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
+    const regencyApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
+    const districtApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
 
     // Tambahkan pilihan negara (manual karena hanya Indonesia)
     const indonesiaOption = document.createElement('option');
@@ -158,81 +174,113 @@ document.addEventListener('DOMContentLoaded', function () {
     countrySelect.appendChild(indonesiaOption);
     countrySelect.value = existingData.country;
 
-    function fetchProvinces() {
-        return fetch(provinceApiUrl)
-            .then(response => response.json())
-            .then(provinces => {
-                provinceSelect.innerHTML = '<option value="">Select Province</option>';
-                let selectedProvinceId = null;
+    async function fetchProvinces() {
+    try {
+        const response = await fetch(provinceApiUrl);
+        const provinces = await response.json();
 
-                provinces.forEach(province => {
-                    const option = document.createElement('option');
-                    option.value = province.name;
-                    option.dataset.id = province.id;
-                    option.textContent = province.name;
+        provinceSelect.innerHTML = '<option value="">Select Province</option>';
 
-                    // Cocokkan nama provinsi dengan existingData (tanpa peduli huruf besar/kecil)
-                    if (province.name.toLowerCase() === existingData.province.toLowerCase()) {
-                        option.selected = true;
-                        selectedProvinceId = province.id;
-                    }
+        provinces.forEach(province => {
+            const option = document.createElement('option');
+            option.value = province.name;
+            option.dataset.id = province.id;
+            option.textContent = province.name;
+            provinceSelect.appendChild(option);
+        });
 
-                    provinceSelect.appendChild(option);
-                });
-
-                return selectedProvinceId;
-            });
-    }
-
-    function fetchDistricts(provinceId) {
-        districtSelect.innerHTML = '<option value="">Loading...</option>';
-
-        if (!provinceId) {
-            districtSelect.innerHTML = '<option value="">Select Province First</option>';
-            return;
+        const existingProvince = existingData.province;
+        const selectedProvince = Array.from(provinceSelect.options).find(opt => opt.value === existingProvince);
+        if (selectedProvince) {
+            selectedProvince.selected = true;
+            return selectedProvince.dataset.id;
         }
 
-        return fetch(`${districtApiBaseUrl}${provinceId}.json`)
-            .then(response => response.json())
-            .then(districts => {
-                districtSelect.innerHTML = '<option value="">Select District/City</option>';
 
-                districts.forEach(district => {
-                    const option = document.createElement('option');
-                    option.value = district.name;
-                    option.textContent = district.name;
-
-                    // Cocokkan nama kabupaten/kota
-                    if (district.name.toLowerCase() === existingData.district.toLowerCase()) {
-                        option.selected = true;
-                    }
-
-                    districtSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching districts:', error);
-                districtSelect.innerHTML = '<option value="">Failed to load districts</option>';
-            });
+        return null;
+    } catch (error) {
+        console.error('Error fetching provinces:', error);
+        return null;
     }
+}
+
+async function fetchRegencies(provinceId) {
+    if (!provinceId) return null;
+
+    const response = await fetch(`${regencyApiBaseUrl}${provinceId}.json`);
+    const regencies = await response.json();
+    regencySelect.innerHTML = '<option value="">Select Regency/City</option>';
+
+    regencies.forEach(regency => {
+        const option = document.createElement('option');
+        option.value = regency.name;
+        option.textContent = regency.name;
+        option.dataset.id = regency.id;
+        regencySelect.appendChild(option);
+    });
+
+    const existingRegency = existingData.regency;
+    const selectedRegency = Array.from(regencySelect.options).find(opt => opt.value === existingRegency);
+    if (selectedRegency) {
+        selectedRegency.selected = true;
+        return selectedRegency.dataset.id;
+    }
+
+
+    return null;
+}
+
+   async function fetchDistricts(regencyId) {
+        if (!regencyId) return;
+
+        const response = await fetch(`${districtApiBaseUrl}${regencyId}.json`);
+        const districts = await response.json();
+        districtSelect.innerHTML = '<option value="">Select District</option>';
+
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district.name;
+            option.textContent = district.name;
+            option.dataset.id = district.id;
+            districtSelect.appendChild(option);
+        });
+
+        const existingDistrict = existingData.district;
+        const selectedDistrict = Array.from(districtSelect.options).find(opt => opt.value === existingDistrict);
+        if (selectedDistrict) {
+            selectedDistrict.selected = true;
+        }
+
+    }
+
 
     provinceSelect.addEventListener('change', () => {
         const selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
         if (selectedProvince && selectedProvince.dataset.id) {
-            fetchDistricts(selectedProvince.dataset.id);
+            fetchRegencies(selectedProvince.dataset.id);
+        }
+    });
+
+    regencySelect.addEventListener('change', () => {
+        const selectedRegency = regencySelect.options[regencySelect.selectedIndex];
+        if (selectedRegency && selectedRegency.dataset.id) {
+            fetchDistricts(selectedRegency.dataset.id);
         }
     });
 
     async function initializeLocation() {
-        try {
-            const provinceId = await fetchProvinces();
-            if (provinceId) {
-                await fetchDistricts(provinceId);
+    try {
+        const provinceId = await fetchProvinces();
+        if (provinceId) {
+            const regencyId = await fetchRegencies(provinceId);
+            if (regencyId) {
+                await fetchDistricts(regencyId);
             }
-        } catch (error) {
-            console.error('Error initializing location dropdowns:', error);
         }
+    } catch (error) {
+        console.error('Error initializing location dropdowns:', error);
     }
+}
 
     initializeLocation();
 });

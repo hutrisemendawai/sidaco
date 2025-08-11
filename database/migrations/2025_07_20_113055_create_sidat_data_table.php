@@ -22,10 +22,12 @@ return new class extends Migration
             $table->string('month');
             $table->string('country');
             $table->string('province');
+            $table->string('regency');
             $table->string('district');
             $table->string('river');
             $table->string('stage');
             $table->string('fisher_name');
+            $table->integer('number_of_fisher');
             $table->string('type_of_fishing_gear');
             $table->integer('number_of_fishing_gear');
             $table->string('species_name');
