@@ -18,6 +18,7 @@ class DashboardController extends Controller
         // --- Filter Logic ---
         $selectedYear = $request->input('year');
         $selectedMonth = $request->input('month');
+        $selectedCountry = $request->input('country');
         $selectedProvince = $request->input('province');
         $selectedSpecies = $request->input('species');
 
@@ -28,6 +29,9 @@ class DashboardController extends Controller
         }
         if ($selectedMonth) {
             $query->whereMonth('date', $selectedMonth);
+        }
+        if ($selectedCountry) {
+            $query->where('country', $selectedCountry);
         }
         if ($selectedProvince) {
             $query->where('province', $selectedProvince);
@@ -43,6 +47,7 @@ class DashboardController extends Controller
 
         // --- Data for Filter Dropdowns ---
         $filterYears = SidatData::select(DB::raw('YEAR(date) as year'))->distinct()->orderBy('year', 'desc')->pluck('year');
+        $filterCountries = SidatData::select('country')->distinct()->orderBy('country', 'desc')->pluck('country');
         $filterProvinces = SidatData::select('province')->distinct()->orderBy('province')->pluck('province');
         $filterSpecies = SidatData::select('species_name')->distinct()->orderBy('species_name')->pluck('species_name');
 
@@ -120,10 +125,12 @@ class DashboardController extends Controller
             'riverLabels',
             'riverWeights',
             'filterYears',
+            'filterCountries',
             'filterProvinces',
             'filterSpecies',
             'selectedYear',
             'selectedMonth',
+            'selectedCountry',
             'selectedProvince',
             'selectedSpecies',
             'request' // <-- FIX: Pass the request object to the view

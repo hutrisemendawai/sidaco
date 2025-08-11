@@ -29,6 +29,7 @@ class SidatData extends Model
         'month',
         'country',
         'province',
+        'regency',
         'district',
         'river',
         'stage',
@@ -52,7 +53,7 @@ class SidatData extends Model
     ];
 
     /**
-     * Get the user that owns the sidat data.
+     * Get the user that owns the Tropical Anguillid Eel Data.
      */
     public function user()
     {

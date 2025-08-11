@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('month');
             $table->string('country');
             $table->string('province');
+            $table->string('regency');
             $table->string('district');
             $table->string('river');
             $table->string('stage');
