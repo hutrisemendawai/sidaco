@@ -5,6 +5,7 @@ use App\Http\Controllers\SidatDataController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FishingDataImportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +39,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('sidat', SidatDataController::class);
 });
 
-require __DIR__.'/auth.php';
+
+
+Route::get('/import-filipin', [FishingDataImportController::class, 'import']);
+// untuk langsung ambil dari E:\filipin.csv
+Route::get('/upload-fishing', [FishingDataImportController::class, 'importForm'])->name('sidat.import');
+Route::post('/upload-fishing', [FishingDataImportController::class, 'upload'])->name('fishing.upload');
+// kalau mau via form upload
+
+
+require __DIR__ . '/auth.php';
