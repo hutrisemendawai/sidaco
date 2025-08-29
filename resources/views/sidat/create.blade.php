@@ -103,7 +103,7 @@
 
                                 <!-- Number of Fishing Gear -->
                                 <div class="mt-4">
-                                    <x-input-label for="number_of_fishing_gear" :value="__('Number of Fishing Gear')" />
+                                    <x-input-label for="number_of_fishing_gear" :value="__('Number Of Fishing Gear')" />
                                     <x-text-input id="number_of_fishing_gear" class="block mt-1 w-full" type="number" name="number_of_fishing_gear" :value="old('number_of_fishing_gear')" required />
                                 </div>
 
@@ -121,7 +121,7 @@
 
                                 <!-- Total Weight (Kg/day) -->
                                 <div class="mt-4">
-                                    <x-input-label for="total_weight_per_day" :value="__('Total Weight (Kg/day)')" />
+                                    <x-input-label for="total_weight_per_day" :value="__('Total Weight (kg/day)')" />
                                     <x-text-input id="total_weight_per_day" class="block mt-1 w-full" type="number" step="0.01" name="total_weight_per_day" :value="old('total_weight_per_day')" required />
                                 </div>
 
