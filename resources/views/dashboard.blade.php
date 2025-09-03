@@ -20,8 +20,32 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                                 <div><label for="year" class="block text-sm font-medium text-gray-700">Year</label><select name="year" id="year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"><option value="">All Years</option>@foreach($filterYears as $year)<option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>@endforeach</select></div>
                                 <div><label for="month" class="block text-sm font-medium text-gray-700">Month</label><select name="month" id="month" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"><option value="">All Months</option>@for ($i = 1; $i <= 12; $i++)<option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($i)->format('F') }}</option>@endfor</select></div>
-                                <div><label for="country" class="block text-sm font-medium text-gray-700">Country</label><select name="country" id="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"><option value="">All Countries</option>@foreach($filterCountries as $country)<option value="{{ $country }}" {{ $selectedCountry == $country ? 'selected' : '' }}>{{ $country }}</option>@endforeach</select></div>
-                                <div><label for="province" class="block text-sm font-medium text-gray-700">Province</label><select name="province" id="province" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"><option value="">All Provinces</option>@foreach($filterProvinces as $province)<option value="{{ $province }}" {{ $selectedProvince == $province ? 'selected' : '' }}>{{ $province }}</option>@endforeach</select></div>
+                                <div>
+    <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+    <select name="country" id="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        <option value="">All Countries</option>
+        @foreach($filterCountries as $country)
+            <option value="{{ $country }}" {{ $selectedCountry == $country ? 'selected' : '' }}>
+                {{ $country }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+<div>
+    <label for="province" class="block text-sm font-medium text-gray-700">Province</label>
+    <select name="province" id="province" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+        <option value="">All Provinces</option>
+        @if ($selectedCountry && $filterProvinces)
+            @foreach($filterProvinces as $province)
+                <option value="{{ $province }}" {{ $selectedProvince == $province ? 'selected' : '' }}>
+                    {{ $province }}
+                </option>
+            @endforeach
+        @endif
+    </select>
+</div>
+
                                 <div><label for="species" class="block text-sm font-medium text-gray-700">Species</label><select name="species" id="species" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"><option value="">All Species</option>@foreach($filterSpecies as $species)<option value="{{ $species }}" {{ $selectedSpecies == $species ? 'selected' : '' }}>{{ $species }}</option>@endforeach</select></div>
                                 <div class="flex items-end space-x-2"><button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-700">Filter</button><a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-400">Reset</a></div>
                             </div>
@@ -70,6 +94,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"><div class="p-6 text-gray-900"><h3 class="text-lg font-medium text-gray-900 mb-4">Top 5 Fisher by Entries</h3><div class="h-64"><canvas id="fishermanChart"></canvas></div></div></div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"><div class="p-6 text-gray-900"><h3 class="text-lg font-medium text-gray-900 mb-4">Total Catch Weight by Stage</h3><div class="h-64"><canvas id="stageChart"></canvas></div></div></div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"><div class="p-6 text-gray-900"><h3 class="text-lg font-medium text-gray-900 mb-4">Top 5 Rivers by Weight (kg)</h3><div class="h-64"><canvas id="riverChart"></canvas></div></div></div>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"><div class="p-6 text-gray-900"><h3 class="text-lg font-medium text-gray-900 mb-4">Top 5 Total Of Fisher By Rivers</h3><div class="h-64"><canvas id="totalOfFisherChart"></canvas></div></div></div>
             </div>
         </div>
     </div>
@@ -85,6 +110,32 @@
             const fishermanCtx = document.getElementById('fishermanChart').getContext('2d'); new Chart(fishermanCtx, { type: 'bar', data: { labels: @json($fishermanLabels), datasets: [{ label: 'Number of Entries', data: @json($fishermanCounts), backgroundColor: 'rgba(239, 68, 68, 0.5)', borderColor: 'rgba(239, 68, 68, 1)', borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } } });
             const stageCtx = document.getElementById('stageChart').getContext('2d'); new Chart(stageCtx, { type: 'pie', data: { labels: @json($stageLabels), datasets: [{ label: 'Total Weight (kg)', data: @json($stageWeights), backgroundColor: ['rgba(249, 115, 22, 0.7)', 'rgba(217, 70, 239, 0.7)', 'rgba(13, 148, 136, 0.7)', 'rgba(219, 39, 119, 0.7)'], }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } } });
             const riverCtx = document.getElementById('riverChart').getContext('2d'); new Chart(riverCtx, { type: 'bar', data: { labels: @json($riverLabels), datasets: [{ label: 'Total Weight (kg)', data: @json($riverWeights), backgroundColor: 'rgba(168, 85, 247, 0.5)', borderColor: 'rgba(168, 85, 247, 1)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } } });
+            const totalOfFisherCtx = document.getElementById('totalOfFisherChart').getContext('2d'); new Chart(totalOfFisherCtx, { type: 'bar', data: { labels: @json($totalOfFisherLabels), datasets: [{ label:'Total Of Fisher', data: @json($TotalOfFisherCounts), backgroundColor: 'rgba(168, 85, 247, 0.5)', borderColor: 'rgba(168, 85, 247, 1)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } } });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#country').on('change', function () {
+            var country = $(this).val();
+            var provinceSelect = $('#province');
+            provinceSelect.empty().append('<option value="">All Provinces</option>');
+
+            if (country) {
+                $.ajax({
+                    url: '/get-provinces/' + country,
+                    type: 'GET',
+                    success: function (data) {
+                        $.each(data, function (index, province) {
+                            provinceSelect.append('<option value="' + province + '">' + province + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+
+
 </x-app-layout>
