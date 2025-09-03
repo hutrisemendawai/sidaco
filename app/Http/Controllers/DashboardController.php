@@ -31,7 +31,17 @@ class DashboardController extends Controller
             $query->whereMonth('date', $selectedMonth);
         }
         if ($selectedCountry) {
-            $query->where('country', $selectedCountry);
+
+            $filterProvinces = collect(); // default kosong
+
+            if ($selectedCountry) {
+                $filterProvinces = SidatData::where('country', $selectedCountry)
+                    ->select('province')
+                    ->distinct()
+                    ->orderBy('province')
+                    ->pluck('province');
+            }
+            //$query->where('country', $selectedCountry);
         }
         if ($selectedProvince) {
             $query->where('province', $selectedProvince);
@@ -46,10 +56,37 @@ class DashboardController extends Controller
         $uniqueCountry = (clone $query)->distinct('country')->count('country');
 
         // --- Data for Filter Dropdowns ---
-        $filterYears = SidatData::select(DB::raw('YEAR(date) as year'))->distinct()->orderBy('year', 'desc')->pluck('year');
-        $filterCountries = SidatData::select('country')->distinct()->orderBy('country', 'desc')->pluck('country');
-        $filterProvinces = SidatData::select('province')->distinct()->orderBy('province')->pluck('province');
-        $filterSpecies = SidatData::select('species_name')->distinct()->orderBy('species_name')->pluck('species_name');
+        // --- Data for Filter Dropdowns ---
+        $filterYears = SidatData::select(DB::raw('YEAR(date) as year'))
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        $filterCountries = SidatData::select('country')
+            ->distinct()
+            ->orderBy('country', 'desc')
+            ->pluck('country');
+
+        if ($selectedCountry) {
+            // Kalau ada country terpilih → tampilkan province sesuai country
+            $filterProvinces = SidatData::where('country', $selectedCountry)
+                ->select('province')
+                ->distinct()
+                ->orderBy('province')
+                ->pluck('province');
+        } else {
+            // Kalau tidak ada country terpilih → tampilkan semua province
+            $filterProvinces = SidatData::select('province')
+                ->distinct()
+                ->orderBy('province')
+                ->pluck('province');
+        }
+
+        $filterSpecies = SidatData::select('species_name')
+            ->distinct()
+            ->orderBy('species_name')
+            ->pluck('species_name');
+
 
         // --- Chart Data (using the filtered query) ---
         $yearlyData = (clone $query)->select(
@@ -104,6 +141,10 @@ class DashboardController extends Controller
         $riverLabels = $riverData->pluck('river');
         $riverWeights = $riverData->pluck('total_weight');
 
+        $totalOfFisherData = (clone $query)->select('river', DB::raw('SUM(number_of_fisher) as total_of_fisher'))->groupBy('river')->orderBy('total_of_fisher', 'desc')->limit(5)->get();
+        $totalOfFisherLabels = $totalOfFisherData->pluck('river');
+        $TotalOfFisherCounts = $totalOfFisherData->pluck('total_of_fisher');
+
         return view('dashboard', compact(
             'totalEntries',
             'totalWeightThisYear',
@@ -133,7 +174,20 @@ class DashboardController extends Controller
             'selectedCountry',
             'selectedProvince',
             'selectedSpecies',
+            'totalOfFisherLabels',
+            'TotalOfFisherCounts',
             'request' // <-- FIX: Pass the request object to the view
         ));
+    }
+
+    public function getProvinces($country)
+    {
+        $provinces = SidatData::where('country', $country)
+            ->select('province')
+            ->distinct()
+            ->orderBy('province')
+            ->pluck('province');
+
+        return response()->json($provinces);
     }
 }

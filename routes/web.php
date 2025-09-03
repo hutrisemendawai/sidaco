@@ -26,6 +26,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::patch('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('admin.users.updateRole');
+    // untuk langsung ambil dari E:\filipin.csv
+    Route::get('/upload-fishing', [FishingDataImportController::class, 'importForm'])->name('sidat.import');
+    Route::post('/upload-fishing', [FishingDataImportController::class, 'upload'])->name('fishing.upload');
+    // kalau mau via form upload
 });
 
 
@@ -37,15 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/sidat/export', [SidatDataController::class, 'export'])->name('sidat.export');
 
     Route::resource('sidat', SidatDataController::class);
+
+    Route::get('/get-provinces/{country}', [DashboardController::class, 'getProvinces']);
 });
-
-
-
-Route::get('/import-filipin', [FishingDataImportController::class, 'import']);
-// untuk langsung ambil dari E:\filipin.csv
-Route::get('/upload-fishing', [FishingDataImportController::class, 'importForm'])->name('sidat.import');
-Route::post('/upload-fishing', [FishingDataImportController::class, 'upload'])->name('fishing.upload');
-// kalau mau via form upload
-
 
 require __DIR__ . '/auth.php';
