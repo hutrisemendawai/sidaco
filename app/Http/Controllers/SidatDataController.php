@@ -28,7 +28,12 @@ class SidatDataController extends Controller
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('river', 'like', "%{$searchTerm}%")
                     ->orWhere('species_name', 'like', "%{$searchTerm}%")
-                    ->orWhere('fisher_name', 'like', "%{$searchTerm}%");
+                    ->orWhere('fisher_name', 'like', "%{$searchTerm}%")
+                    ->orWhere('country', 'like', "%{$searchTerm}%")
+                    ->orWhere('province', 'like', "%{$searchTerm}%")
+                    ->orWhere('regency', 'like', "%{$searchTerm}%")
+                    ->orWhere('district', 'like', "%{$searchTerm}%")
+                    ->orWhere('type_of_fishing_gear', 'like', "%{$searchTerm}%");
             });
         }
 
