@@ -41,6 +41,8 @@ class SidatData extends Model
         'operation_time',
         'total_weight_per_day',
         'price_per_kg',
+        'iscreatedbyenum',
+        'isapproved',
     ];
 
     /**
@@ -50,6 +52,8 @@ class SidatData extends Model
      */
     protected $casts = [
         'date' => 'date',
+        'iscreatedbyenum' => 'boolean',
+        'isapproved' => 'boolean',
     ];
 
     /**

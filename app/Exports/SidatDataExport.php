@@ -23,6 +23,8 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
     {
         $query = SidatData::query()->with('user');
 
+        $query->where('isapproved', true);
+
         if (!Auth::user()->isAdmin()) {
             $query->where('user_id', Auth::id());
         }

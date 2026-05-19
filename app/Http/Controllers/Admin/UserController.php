@@ -33,7 +33,7 @@ class UserController extends Controller
 
         // Validate the incoming request
         $validated = $request->validate([
-            'role' => ['required', Rule::in(['admin', 'user'])],
+            'role' => ['required', Rule::in(['admin', 'user', 'enum'])],
         ]);
 
         // Update the user's role

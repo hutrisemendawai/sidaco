@@ -17,7 +17,11 @@ class SidatDataController extends Controller
      */
     public function index(Request $request)
     {
-        $query = SidatData::query()->with('user');
+        if (Auth::user()->isEnum()) {
+            abort(403, 'Enum accounts do not have access to view data.');
+        }
+
+        $query = SidatData::query()->with('user')->where('isapproved', true);
 
         if (!Auth::user()->isAdmin()) {
             $query->where('user_id', Auth::id());
@@ -54,6 +58,9 @@ class SidatDataController extends Controller
      */
     public function export(Request $request)
     {
+        if (Auth::user()->isEnum()) {
+            abort(403);
+        }
         $fileName = 'sidat_data-' . now()->format('Y-m-d') . '.xlsx';
         return Excel::download(new SidatDataExport($request), $fileName);
     }
@@ -63,8 +70,17 @@ class SidatDataController extends Controller
      */
     public function create()
     {
+        if (Auth::user()->isEnum()) {
+            abort(403);
+        }
         $rivers = SidatData::distinct()->pluck('river');
         return view('sidat.create', compact('rivers'));
+    }
+
+    public function enumCreate()
+    {
+        $rivers = SidatData::distinct()->pluck('river');
+        return view('sidat.create_enum', compact('rivers'));
     }
 
     /**
@@ -95,7 +111,19 @@ class SidatDataController extends Controller
         $validatedData['month'] = $date->format('F');
         $validatedData['user_id'] = Auth::id();
 
+        if (Auth::user()->isEnum()) {
+            $validatedData['iscreatedbyenum'] = true;
+            $validatedData['isapproved'] = false;
+        } else {
+            $validatedData['iscreatedbyenum'] = false;
+            $validatedData['isapproved'] = true;
+        }
+
         SidatData::create($validatedData);
+
+        if (Auth::user()->isEnum()) {
+            return redirect()->route('enum.sidat.create')->with('success', 'Tropical Anguillid Eel Data submitted for approval successfully!');
+        }
 
         return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data added successfully!');
     }
@@ -114,6 +142,9 @@ class SidatDataController extends Controller
      */
     public function showPublic(SidatData $sidat)
     {
+        if (!$sidat->isapproved) {
+            abort(404, 'Data not found or not approved yet.');
+        }
         return view('sidat.show', compact('sidat'));
     }
 

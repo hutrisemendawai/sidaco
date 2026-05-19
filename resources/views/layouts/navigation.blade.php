@@ -17,13 +17,29 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    @if(!Auth::user()->isEnum())
                     <x-nav-link :href="route('sidat.index')" :active="request()->routeIs('sidat.*')">
                         {{ __('Tropical Anguillid Eel Data') }}
                     </x-nav-link>
+                    @endif
+
+                    @if(Auth::user()->isEnum())
+                    <x-nav-link :href="route('enum.sidat.create')" :active="request()->routeIs('enum.sidat.*')">
+                        {{ __('Input Data') }}
+                    </x-nav-link>
+                    @endif
 
                     @if(Auth::user()->isAdmin())
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                             {{ __('User Management') }}
+                        </x-nav-link>
+                        
+                        <x-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
+                            {{ __('Data Approval') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.enumerator.create')" :active="request()->routeIs('admin.enumerator.*')">
+                            {{ __('Create Enumerator') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -85,13 +101,29 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+            @if(!Auth::user()->isEnum())
             <x-responsive-nav-link :href="route('sidat.index')" :active="request()->routeIs('sidat.*')">
                 {{ __('Sidat Data') }}
             </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->isEnum())
+            <x-responsive-nav-link :href="route('enum.sidat.create')" :active="request()->routeIs('enum.sidat.*')">
+                {{ __('Input Data') }}
+            </x-responsive-nav-link>
+            @endif
 
              @if(Auth::user()->isAdmin())
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                     {{ __('User Management') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
+                    {{ __('Data Approval') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.enumerator.create')" :active="request()->routeIs('admin.enumerator.*')">
+                    {{ __('Create Enumerator') }}
                 </x-responsive-nav-link>
             @endif
         </div>

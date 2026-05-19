@@ -67,6 +67,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if the user has the 'enum' role.
+     */
+    public function isEnum(): bool
+    {
+        return $this->role === 'enum';
+    }
+
+    /**
      * Generate the URL for the user's avatar.
      */
     public function avatarUrl(): string

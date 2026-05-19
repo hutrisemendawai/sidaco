@@ -39,6 +39,7 @@
                                                     <select name="role" class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
                                                         <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
                                                         <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                                        <option value="enum" {{ $user->role === 'enum' ? 'selected' : '' }}>Enumerator</option>
                                                     </select>
                                                     <x-primary-button type="submit">{{ __('Save') }}</x-primary-button>
                                                 </div>

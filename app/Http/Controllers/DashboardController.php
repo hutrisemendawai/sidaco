@@ -13,8 +13,12 @@ class DashboardController extends Controller
     /**
      * Display the main dashboard view with chart data.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
+        if (auth()->user()->isEnum()) {
+            return redirect()->route('enum.sidat.create');
+        }
+
         // --- Filter Logic ---
         $selectedYear = $request->input('year');
         $selectedMonth = $request->input('month');
@@ -22,7 +26,7 @@ class DashboardController extends Controller
         $selectedProvince = $request->input('province');
         $selectedSpecies = $request->input('species');
 
-        $query = SidatData::query();
+        $query = SidatData::query()->where('isapproved', true);
 
         if ($selectedYear) {
             $query->whereYear('date', $selectedYear);
