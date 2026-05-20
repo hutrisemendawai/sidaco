@@ -10,40 +10,25 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @if (session('success'))
-                        <div class="mb-4 font-medium text-sm text-green-600">
+                        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                             {{ session('success') }}
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('admin.enumerator.store') }}" class="space-y-4 max-w-md">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            {{ __('Generate Enumerator Account') }}
+                        </h3>
+                        <p class="mt-1 text-sm text-gray-600">
+                            {{ __('Click the button below to automatically generate a new enumerator account. The system will create a unique username and password for you.') }}
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.enumerator.store') }}">
                         @csrf
-
-                        <!-- Email Address -->
-                        <div>
-                            <x-input-label for="email" :value="__('Email Address')" />
-                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                        </div>
-
-                        <!-- Password -->
-                        <div>
-                            <x-input-label for="password" :value="__('Password')" />
-                            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div>
-                            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-                            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-                            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button>
-                                {{ __('Create Account') }}
-                            </x-primary-button>
-                        </div>
+                        <x-primary-button>
+                            {{ __('Create Account Automatically') }}
+                        </x-primary-button>
                     </form>
                 </div>
             </div>
