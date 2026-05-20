@@ -46,15 +46,18 @@ class SidatData extends Model
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'date' => 'date',
-        'iscreatedbyenum' => 'boolean',
-        'isapproved' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'iscreatedbyenum' => 'boolean',
+            'isapproved' => 'boolean',
+        ];
+    }
 
     /**
      * Get the user that owns the Tropical Anguillid Eel Data.
