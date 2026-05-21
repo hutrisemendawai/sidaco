@@ -155,16 +155,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const regencySelect = document.getElementById('regency');
     const districtSelect = document.getElementById('district');
 
+    const userProfile = {
+        country: "{{ Auth::user()->country }}",
+        province: "{{ Auth::user()->province }}",
+        regency: "{{ Auth::user()->district }}", // In profile 'district' is Regency/City
+        district: "{{ Auth::user()->sub_district }}" // In profile 'sub_district' is District
+    };
+
     const provinceApiUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json';
     const regencyApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
     const districtApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
 
-    // Isi country manual karena hanya Indonesia
+    // Isi country manual
     const indonesiaOption = document.createElement('option');
     indonesiaOption.value = 'Indonesia';
     indonesiaOption.textContent = 'Indonesia';
-    indonesiaOption.selected = true;
     countrySelect.appendChild(indonesiaOption);
+
+    if (userProfile.country) {
+        countrySelect.value = userProfile.country;
+    } else {
+        countrySelect.value = 'Indonesia';
+    }
 
     function fetchProvinces() {
         fetch(provinceApiUrl)
@@ -174,15 +186,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 provinces.forEach(province => {
                     const option = document.createElement('option');
                     option.value = province.name;
-                    option.dataset.id = province.id; // simpan ID untuk fetch kabupaten/kota
+                    option.dataset.id = province.id;
                     option.textContent = province.name;
                     provinceSelect.appendChild(option);
                 });
 
-                const southSumatra = Array.from(provinceSelect.options).find(opt => opt.value === 'SUMATERA SELATAN');
-                if (southSumatra) {
-                    southSumatra.selected = true;
-                    fetchRegencies();
+                if (userProfile.province) {
+                    const profileProvince = Array.from(provinceSelect.options).find(opt => opt.value === userProfile.province);
+                    if (profileProvince) {
+                        profileProvince.selected = true;
+                        fetchRegencies();
+                    }
                 }
             })
             .catch(error => console.error('Error fetching provinces:', error));
@@ -190,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function fetchRegencies() {
         const selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
-        const provinceId = selectedProvince.dataset.id;
+        const provinceId = selectedProvince ? selectedProvince.dataset.id : null;
         regencySelect.innerHTML = '<option value="">Loading...</option>';
 
         if (!provinceId) {
@@ -210,21 +224,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     regencySelect.appendChild(option);
                 });
 
-                const palembang = Array.from(regencySelect.options).find(opt => opt.value === 'KOTA PALEMBANG');
-                if (palembang) {
-                    palembang.selected = true;
-                    fetchDistricts();
+                if (userProfile.regency) {
+                    const profileRegency = Array.from(regencySelect.options).find(opt => opt.value === userProfile.regency);
+                    if (profileRegency) {
+                        profileRegency.selected = true;
+                        fetchDistricts();
+                    }
                 }
             })
             .catch(error => {
-                console.error('Error fetching districts:', error);
+                console.error('Error fetching regencies:', error);
                 regencySelect.innerHTML = '<option value="">Failed to load regencies/cities</option>';
             });
     }
 
     function fetchDistricts() {
         const selectedRegency = regencySelect.options[regencySelect.selectedIndex];
-        const regencyId = selectedRegency.dataset.id;
+        const regencyId = selectedRegency ? selectedRegency.dataset.id : null;
         districtSelect.innerHTML = '<option value="">Loading...</option>';
 
         if (!regencyId) {
@@ -243,9 +259,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     districtSelect.appendChild(option);
                 });
 
-                const sukarami = Array.from(districtSelect.options).find(opt => opt.value === 'SUKARAMI');
-                if (sukarami) {
-                    sukarami.selected = true;
+                if (userProfile.district) {
+                    const profileDistrict = Array.from(districtSelect.options).find(opt => opt.value === userProfile.district);
+                    if (profileDistrict) {
+                        profileDistrict.selected = true;
+                    }
                 }
             })
             .catch(error => {

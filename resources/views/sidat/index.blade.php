@@ -34,7 +34,10 @@
                                 <thead class="bg-gray-100 sticky top-0">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QR Code</th>
-                                        @if(Auth::user()->isAdmin())<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>@endif
+                                        @if(Auth::user()->isAdmin())
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created By</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated By</th>
+                                        @endif
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Province</th>
@@ -73,7 +76,24 @@
                                                     {!! $smallQrCode !!}
                                                 </button>
                                             </td>
-                                            @if(Auth::user()->isAdmin())<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $data->user->first_name ?? 'N/A' }}</td>@endif
+                                            @if(Auth::user()->isAdmin())
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <div class="flex items-center gap-2">
+                                                    <img src="{{ $data->user->avatarUrl() }}" class="h-6 w-6 rounded-full object-cover" />
+                                                    <span>{{ $data->user->first_name ?? 'N/A' }} {{ $data->user->last_name ?? '' }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                @if($data->updatedBy)
+                                                    <div class="flex items-center gap-2">
+                                                        <img src="{{ $data->updatedBy->avatarUrl() }}" class="h-6 w-6 rounded-full object-cover" />
+                                                        <span>{{ $data->updatedBy->first_name }} {{ $data->updatedBy->last_name }}</span>
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400">—</span>
+                                                @endif
+                                            </td>
+                                            @endif
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->date->format('d M Y') }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->country }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $data->province }}</td>

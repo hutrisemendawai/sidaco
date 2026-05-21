@@ -21,7 +21,7 @@ class SidatDataController extends Controller
             abort(403, 'Enum accounts do not have access to view data.');
         }
 
-        $query = SidatData::query()->with('user')->where('isapproved', true);
+        $query = SidatData::query()->with(['user', 'updatedBy'])->where('isapproved', true);
 
         if (!Auth::user()->isAdmin()) {
             $query->where('user_id', Auth::id());
@@ -110,6 +110,7 @@ class SidatDataController extends Controller
         $validatedData['day'] = $date->format('l');
         $validatedData['month'] = $date->format('F');
         $validatedData['user_id'] = Auth::id();
+        $validatedData['updated_by'] = Auth::id();
 
         if (Auth::user()->isEnum()) {
             $validatedData['iscreatedbyenum'] = true;
@@ -145,6 +146,7 @@ class SidatDataController extends Controller
         if (!$sidat->isapproved) {
             abort(404, 'Data not found or not approved yet.');
         }
+        $sidat->load(['user', 'updatedBy']);
         return view('sidat.show', compact('sidat'));
     }
 
@@ -191,6 +193,7 @@ class SidatDataController extends Controller
         $date = Carbon::parse($validatedData['date']);
         $validatedData['day'] = $date->format('l');
         $validatedData['month'] = $date->format('F');
+        $validatedData['updated_by'] = Auth::id();
 
         $sidat->update($validatedData);
 

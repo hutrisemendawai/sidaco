@@ -36,20 +36,34 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $data->river }}, {{ $data->district }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $data->species_name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $data->total_weight_per_day }} kg</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $data->user->first_name ?? 'Unknown' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
-                                            <form method="POST" action="{{ route('admin.approvals.approve', $data->id) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded">Approve</button>
-                                            </form>
-                                            
-                                            <form method="POST" action="{{ route('admin.approvals.reject', $data->id) }}" onsubmit="return confirm('Are you sure you want to reject and delete this data?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 px-2 py-1 rounded">Reject (Delete)</button>
-                                            </form>
-                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <div class="flex items-center gap-2">
+                                                    <img src="{{ $data->user->avatarUrl() }}" alt="" class="h-7 w-7 rounded-full object-cover">
+                                                    <div>
+                                                        <div class="font-medium text-gray-800">{{ $data->user->first_name ?? '' }} {{ $data->user->last_name ?? '' }}</div>
+                                                        <div class="text-xs text-gray-400">{{ $data->user->email ?? '' }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <div class="flex items-center gap-2">
+                                                    <a href="{{ route('admin.approvals.edit', $data->id) }}"
+                                                       class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded text-xs font-semibold">Edit &amp; Review</a>
+
+                                                    <form method="POST" action="{{ route('admin.approvals.approve', $data->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded text-xs font-semibold">Approve</button>
+                                                    </form>
+
+                                                    <form method="POST" action="{{ route('admin.approvals.reject', $data->id) }}"
+                                                        onsubmit="return confirm('Reject and permanently delete this data?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 px-2 py-1 rounded text-xs font-semibold">Reject</button>
+                                                    </form>
+                                                </div>
+                                            </td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -61,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="mt-4">
                 {{ $pendingData->links() }}
             </div>

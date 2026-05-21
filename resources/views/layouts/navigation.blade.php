@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ Auth::user()->isEnum() ? route('enum.sidat.create') : route('dashboard') }}">
                         {{-- Added transition classes for a subtle hover animation --}}
                         <img src="{{ asset('images/seafdeclogo.png') }}" alt="Logo" class="block h-9 w-auto transition-transform duration-300 ease-in-out hover:scale-110 hover:-rotate-6" />
                     </a>
@@ -13,9 +13,11 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    @if(!Auth::user()->isEnum())
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @endif
 
                     @if(!Auth::user()->isEnum())
                     <x-nav-link :href="route('sidat.index')" :active="request()->routeIs('sidat.*')">
@@ -30,10 +32,14 @@
                     @endif
 
                     @if(Auth::user()->isAdmin())
+                        <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                            {{ __('Create User') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                             {{ __('User Management') }}
                         </x-nav-link>
-                        
+
                         <x-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
                             {{ __('Data Approval') }}
                         </x-nav-link>
@@ -51,8 +57,8 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             {{-- Avatar --}}
-                            <img src="{{ Auth::user()->avatarUrl() }}" alt="Avatar" class="h-8 w-8 rounded-full me-2">
-                            
+                            <img src="{{ Auth::user()->avatarUrl() }}" alt="Avatar" class="h-8 w-8 rounded-full object-cover me-2">
+
                             <div>{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</div>
 
                             <div class="ms-1">
@@ -97,9 +103,11 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            @if(!Auth::user()->isEnum())
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @endif
 
             @if(!Auth::user()->isEnum())
             <x-responsive-nav-link :href="route('sidat.index')" :active="request()->routeIs('sidat.*')">
@@ -114,6 +122,10 @@
             @endif
 
              @if(Auth::user()->isAdmin())
+                <x-responsive-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                    {{ __('Create User') }}
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                     {{ __('User Management') }}
                 </x-responsive-nav-link>

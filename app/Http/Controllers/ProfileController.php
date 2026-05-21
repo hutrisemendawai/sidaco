@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 class ProfileController extends Controller
 {
     /**
@@ -26,13 +29,37 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (isset($validated['profile_photo'])) {
+            $base64Image = $validated['profile_photo'];
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $imageContent = substr($base64Image, strpos($base64Image, ',') + 1);
+                $type = strtolower($type[1]); // jpg, png, etc
+
+                if (in_array($type, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $imageContent = base64_decode($imageContent);
+                    $filename = 'profile-photos/' . $user->id . '_' . Str::random(10) . '.' . $type;
+
+                    if ($user->profile_photo_path) {
+                        Storage::disk('public')->delete($user->profile_photo_path);
+                    }
+
+                    Storage::disk('public')->put($filename, $imageContent);
+                    $validated['profile_photo_path'] = $filename;
+                }
+            }
+            unset($validated['profile_photo']);
         }
 
-        $request->user()->save();
+        $user->fill($validated);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

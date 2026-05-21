@@ -33,9 +33,7 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                {{ __('Register') }}
-            </a>
+            {{-- Registration is disabled for public. Only admins can create users. --}}
 
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}

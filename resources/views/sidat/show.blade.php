@@ -39,8 +39,11 @@
                     <div class="detail-row py-2"><span class="detail-label">Operation Time:</span><span class="detail-value float-right">{{ $sidat->operation_time }} hours</span></div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-gray-50 text-center text-xs text-gray-500">
-                Data recorded on {{ $sidat->created_at->format('Y-m-d H:i') }}
+            <div class="px-6 py-4 bg-gray-50 text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-1">
+                <span>Created by: <strong>{{ $sidat->user->first_name ?? 'Unknown' }} {{ $sidat->user->last_name ?? '' }}</strong> on {{ $sidat->created_at->format('d M Y, H:i') }}</span>
+                @if($sidat->updatedBy)
+                    <span>Last updated by: <strong>{{ $sidat->updatedBy->first_name }} {{ $sidat->updatedBy->last_name }}</strong> on {{ $sidat->updated_at->format('d M Y, H:i') }}</span>
+                @endif
             </div>
         </div>
     </div>

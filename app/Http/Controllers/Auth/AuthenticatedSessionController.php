@@ -29,6 +29,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (Auth::user()->isEnum()) {
+            return redirect()->intended(route('enum.sidat.create'));
+        }
+
         return redirect()->intended(route('dashboard'));
     }
 

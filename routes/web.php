@@ -33,6 +33,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Approvals
     Route::get('/approvals', [App\Http\Controllers\Admin\ApprovalController::class, 'index'])->name('admin.approvals.index');
+    Route::get('/approvals/{sidat}/edit', [App\Http\Controllers\Admin\ApprovalController::class, 'edit'])->name('admin.approvals.edit');
+    Route::put('/approvals/{sidat}', [App\Http\Controllers\Admin\ApprovalController::class, 'update'])->name('admin.approvals.update');
     Route::patch('/approvals/{sidat}/approve', [App\Http\Controllers\Admin\ApprovalController::class, 'approve'])->name('admin.approvals.approve');
     Route::delete('/approvals/{sidat}/reject', [App\Http\Controllers\Admin\ApprovalController::class, 'reject'])->name('admin.approvals.reject');
 
@@ -43,7 +45,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::middleware(['auth', 'enum'])->group(function () {
     Route::get('/enum/sidat/create', [SidatDataController::class, 'enumCreate'])->name('enum.sidat.create');
-    // We will reuse sidat.store for both since both need to post. 
+    // We will reuse sidat.store for both since both need to post.
     // Or we can create enum store if it differs. Lets reuse resource store.
 });
 

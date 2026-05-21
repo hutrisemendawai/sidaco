@@ -23,6 +23,11 @@ class ProfileUpdateRequest extends FormRequest
             'birth_date' => ['required', 'date'],
             'address' => ['required', 'string'],
             'phone_number' => ['required', 'string', 'max:20'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'province' => ['nullable', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
+            'sub_district' => ['nullable', 'string', 'max:255'],
+            'profile_photo' => ['nullable', 'string'], // Will receive base64 from frontend
         ];
     }
 }

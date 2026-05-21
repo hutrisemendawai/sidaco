@@ -40,7 +40,31 @@ class RegisteredUserController extends Controller
             'phone_number' => ['required', 'string', 'regex:/^08[0-9]{8,11}$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'country' => ['nullable', 'string', 'max:255'],
+            'province' => ['nullable', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
+            'sub_district' => ['nullable', 'string', 'max:255'],
+            'profile_photo' => ['nullable', 'string'],
         ]);
+
+        $validated = $request->all();
+        $profile_photo_path = null;
+
+        if (isset($validated['profile_photo']) && $validated['profile_photo']) {
+            $base64Image = $validated['profile_photo'];
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+                $imageContent = substr($base64Image, strpos($base64Image, ',') + 1);
+                $type = strtolower($type[1]);
+
+                if (in_array($type, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $imageContent = base64_decode($imageContent);
+                    $filename = 'profile-photos/' . uniqid() . '_' . \Illuminate\Support\Str::random(10) . '.' . $type;
+
+                    \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $imageContent);
+                    $profile_photo_path = $filename;
+                }
+            }
+        }
 
         // This section creates the user with the correct fields.
         $user = User::create([
@@ -52,12 +76,15 @@ class RegisteredUserController extends Controller
             'phone_number' => $request->phone_number,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'country' => $request->country,
+            'province' => $request->province,
+            'district' => $request->district,
+            'sub_district' => $request->sub_district,
+            'profile_photo_path' => $profile_photo_path,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('admin.users.index'))->with('success', 'User created successfully.');
     }
 }

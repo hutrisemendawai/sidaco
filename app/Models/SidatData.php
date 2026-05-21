@@ -43,6 +43,7 @@ class SidatData extends Model
         'price_per_kg',
         'iscreatedbyenum',
         'isapproved',
+        'updated_by',
     ];
 
     /**
@@ -65,5 +66,10 @@ class SidatData extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

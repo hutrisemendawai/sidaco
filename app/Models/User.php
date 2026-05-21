@@ -27,6 +27,11 @@ class User extends Authenticatable
         'password',
         'address',
         'phone_number',
+        'country',
+        'province',
+        'district',
+        'sub_district',
+        'profile_photo_path',
     ];
 
     /**
@@ -82,6 +87,10 @@ class User extends Authenticatable
      */
     public function avatarUrl(): string
     {
+        if ($this->profile_photo_path) {
+            return asset('storage/' . $this->profile_photo_path);
+        }
+
         $name = urlencode($this->first_name . ' ' . $this->last_name);
         $background = '0ea5e9'; // Sky blue color
         $color = 'ffffff'; // White text
