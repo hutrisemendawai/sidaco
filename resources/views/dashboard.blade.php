@@ -36,13 +36,11 @@
     <label for="province" class="block text-sm font-medium text-gray-700">Province</label>
     <select name="province" id="province" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
         <option value="">All Provinces</option>
-        @if ($selectedCountry && $filterProvinces)
-            @foreach($filterProvinces as $province)
-                <option value="{{ $province }}" {{ $selectedProvince == $province ? 'selected' : '' }}>
-                    {{ $province }}
-                </option>
-            @endforeach
-        @endif
+        @foreach($filterProvinces as $province)
+            <option value="{{ $province }}" {{ $selectedProvince == $province ? 'selected' : '' }}>
+                {{ $province }}
+            </option>
+        @endforeach
     </select>
 </div>
 
@@ -123,7 +121,7 @@
 
             if (country) {
                 $.ajax({
-                    url: '/get-provinces/' + country,
+                    url: '{{ url("/get-provinces") }}/' + country,
                     type: 'GET',
                     success: function (data) {
                         $.each(data, function (index, province) {

@@ -35,17 +35,7 @@ class DashboardController extends Controller
             $query->whereMonth('date', $selectedMonth);
         }
         if ($selectedCountry) {
-
-            $filterProvinces = collect(); // default kosong
-
-            if ($selectedCountry) {
-                $filterProvinces = SidatData::where('country', $selectedCountry)
-                    ->select('province')
-                    ->distinct()
-                    ->orderBy('province')
-                    ->pluck('province');
-            }
-            //$query->where('country', $selectedCountry);
+            $query->where('country', $selectedCountry);
         }
         if ($selectedProvince) {
             $query->where('province', $selectedProvince);
@@ -61,32 +51,37 @@ class DashboardController extends Controller
 
         // --- Data for Filter Dropdowns ---
         // --- Data for Filter Dropdowns ---
-        $filterYears = SidatData::select(DB::raw('YEAR(date) as year'))
+        $filterYears = SidatData::where('isapproved', true)
+            ->select(DB::raw('YEAR(date) as year'))
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        $filterCountries = SidatData::select('country')
+        $filterCountries = SidatData::where('isapproved', true)
+            ->select('country')
             ->distinct()
             ->orderBy('country', 'desc')
             ->pluck('country');
 
         if ($selectedCountry) {
             // Kalau ada country terpilih → tampilkan province sesuai country
-            $filterProvinces = SidatData::where('country', $selectedCountry)
+            $filterProvinces = SidatData::where('isapproved', true)
+                ->where('country', $selectedCountry)
                 ->select('province')
                 ->distinct()
                 ->orderBy('province')
                 ->pluck('province');
         } else {
             // Kalau tidak ada country terpilih → tampilkan semua province
-            $filterProvinces = SidatData::select('province')
+            $filterProvinces = SidatData::where('isapproved', true)
+                ->select('province')
                 ->distinct()
                 ->orderBy('province')
                 ->pluck('province');
         }
 
-        $filterSpecies = SidatData::select('species_name')
+        $filterSpecies = SidatData::where('isapproved', true)
+            ->select('species_name')
             ->distinct()
             ->orderBy('species_name')
             ->pluck('species_name');
@@ -186,7 +181,8 @@ class DashboardController extends Controller
 
     public function getProvinces($country)
     {
-        $provinces = SidatData::where('country', $country)
+        $provinces = SidatData::where('isapproved', true)
+            ->where('country', $country)
             ->select('province')
             ->distinct()
             ->orderBy('province')

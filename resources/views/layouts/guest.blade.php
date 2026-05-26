@@ -38,8 +38,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
                 <a href="/">
-                    {{-- Added animation class to the logo --}}
-                    <img src="{{ asset('images/seafdeclogo.png') }}" alt="Logo" class="h-20 w-auto animate-fade-in-down" />
+                    <x-application-logo class="h-20 animate-fade-in-down" />
                 </a>
             </div>
 

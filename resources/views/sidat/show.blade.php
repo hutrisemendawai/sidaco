@@ -23,7 +23,7 @@
                     <h1 class="text-2xl font-bold">Tropical Anguillid Eel Data Details</h1>
                     <p class="text-sm opacity-90">Record ID: {{ $sidat->id }}</p>
                 </div>
-                <img src="{{ asset('images/seafdeclogo.png') }}" alt="Logo" class="h-12 w-auto" />
+                <x-application-logo class="h-12" />
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">

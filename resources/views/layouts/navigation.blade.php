@@ -5,9 +5,8 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ Auth::user()->isEnum() ? route('enum.sidat.create') : route('dashboard') }}">
-                        {{-- Added transition classes for a subtle hover animation --}}
-                        <img src="{{ asset('images/seafdeclogo.png') }}" alt="Logo" class="block h-9 w-auto transition-transform duration-300 ease-in-out hover:scale-110 hover:-rotate-6" />
+                    <a href="{{ Auth::user()->isEnum() ? route('enum.sidat.create') : route('dashboard') }}" title="{{ __('Go to Home') }}">
+                        <x-application-logo class="block transition-transform duration-300 ease-in-out hover:scale-110 hover:-rotate-6" />
                     </a>
                 </div>
 
@@ -32,21 +31,39 @@
                     @endif
 
                     @if(Auth::user()->isAdmin())
-                        <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
-                            {{ __('Create User') }}
-                        </x-nav-link>
+                        <div class="hidden sm:flex sm:items-center">
+                            <x-dropdown align="left" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out {{ request()->routeIs('register') || request()->routeIs('admin.users.index') || request()->routeIs('admin.approvals.*') || request()->routeIs('admin.enumerator.*') ? 'border-indigo-400 text-gray-900' : '' }}">
+                                        <div>{{ __('Admin Panel') }}</div>
 
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
-                            {{ __('User Management') }}
-                        </x-nav-link>
+                                        <div class="ms-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
 
-                        <x-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
-                            {{ __('Data Approval') }}
-                        </x-nav-link>
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('register')" :active="request()->routeIs('register')">
+                                        {{ __('Create User') }}
+                                    </x-dropdown-link>
 
-                        <x-nav-link :href="route('admin.enumerator.create')" :active="request()->routeIs('admin.enumerator.*')">
-                            {{ __('Create Enumerator') }}
-                        </x-nav-link>
+                                    <x-dropdown-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                                        {{ __('User Management') }}
+                                    </x-dropdown-link>
+
+                                    <x-dropdown-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
+                                        {{ __('Data Approval') }}
+                                    </x-dropdown-link>
+
+                                    <x-dropdown-link :href="route('admin.enumerator.create')" :active="request()->routeIs('admin.enumerator.*')">
+                                        {{ __('Create Enumerator') }}
+                                    </x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -121,22 +138,30 @@
             </x-responsive-nav-link>
             @endif
 
-             @if(Auth::user()->isAdmin())
-                <x-responsive-nav-link :href="route('register')" :active="request()->routeIs('register')">
-                    {{ __('Create User') }}
-                </x-responsive-nav-link>
+            @if(Auth::user()->isAdmin())
+                <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="px-4">
+                        <div class="font-medium text-base text-gray-800">{{ __('Admin Panel') }}</div>
+                    </div>
 
-                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
-                    {{ __('User Management') }}
-                </x-responsive-nav-link>
+                    <div class="mt-3 space-y-1">
+                        <x-responsive-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                            {{ __('Create User') }}
+                        </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
-                    {{ __('Data Approval') }}
-                </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                            {{ __('User Management') }}
+                        </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('admin.enumerator.create')" :active="request()->routeIs('admin.enumerator.*')">
-                    {{ __('Create Enumerator') }}
-                </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
+                            {{ __('Data Approval') }}
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link :href="route('admin.enumerator.create')" :active="request()->routeIs('admin.enumerator.*')">
+                            {{ __('Create Enumerator') }}
+                        </x-responsive-nav-link>
+                    </div>
+                </div>
             @endif
         </div>
 
