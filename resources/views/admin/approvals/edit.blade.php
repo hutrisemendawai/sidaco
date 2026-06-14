@@ -44,6 +44,12 @@
                         </div>
                     @endif
 
+                    <form method="POST" action="{{ route('admin.approvals.reject', $sidat->id) }}" id="reject-form"
+                        onsubmit="return confirm('Reject and permanently delete this data?')">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+
                     <form method="POST" action="{{ route('admin.approvals.update', $sidat->id) }}" id="approval-form">
                         @csrf
                         @method('PUT')
@@ -162,15 +168,10 @@
 
                             <div class="flex items-center gap-3">
                                 {{-- Reject --}}
-                                <form method="POST" action="{{ route('admin.approvals.reject', $sidat->id) }}"
-                                    onsubmit="return confirm('Reject and permanently delete this data?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700">
-                                        ✕ Reject &amp; Delete
-                                    </button>
-                                </form>
+                                <button type="submit" form="reject-form"
+                                    class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700">
+                                    ✕ Reject &amp; Delete
+                                </button>
 
                                 <a href="{{ route('admin.approvals.index') }}" class="text-sm text-gray-600 hover:text-gray-900">
                                     Cancel
