@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Models\SidatData;
 
@@ -44,12 +45,39 @@ class ApprovalController extends Controller
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],
+            'fish_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
+            'suhu' => ['nullable', 'numeric', 'min:-50', 'max:100'],
+            'ph_air' => ['nullable', 'numeric', 'min:0', 'max:14'],
+            'salinitas' => ['nullable', 'numeric', 'min:0', 'max:50'],
+            'hujan' => ['nullable', 'boolean'],
+            'stage_type' => ['nullable', 'string', 'in:Glasseel,Elver,Yellow Eel'],
+            'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        // Handle fish photo upload
+        if ($request->hasFile('fish_photo')) {
+            if ($sidat->fish_photo && Storage::disk('public')->exists($sidat->fish_photo)) {
+                Storage::disk('public')->delete($sidat->fish_photo);
+            }
+            $photo = $request->file('fish_photo');
+            $filename = 'fish_' . time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+            $photo->storeAs('sidat_photos', $filename, 'public');
+            $validatedData['fish_photo'] = 'sidat_photos/' . $filename;
+        }
+
+        // Handle photo removal
+        if ($request->input('remove_photo') == '1' && !$request->hasFile('fish_photo')) {
+            if ($sidat->fish_photo && Storage::disk('public')->exists($sidat->fish_photo)) {
+                Storage::disk('public')->delete($sidat->fish_photo);
+            }
+            $validatedData['fish_photo'] = null;
+        }
 
         $date = Carbon::parse($validatedData['date']);
         $validatedData['day'] = $date->format('l');
         $validatedData['month'] = $date->format('F');
         $validatedData['updated_by'] = Auth::id();
+        $validatedData['hujan'] = $validatedData['hujan'] ?? false;
 
         // Handle approve-and-save vs save-only
         if ($request->has('approve')) {

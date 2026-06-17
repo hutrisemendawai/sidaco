@@ -71,17 +71,8 @@ class SidatDataController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->isEnum()) {
-            abort(403);
-        }
         $rivers = SidatData::distinct()->pluck('river');
         return view('sidat.create', compact('rivers'));
-    }
-
-    public function enumCreate()
-    {
-        $rivers = SidatData::distinct()->pluck('river');
-        return view('sidat.create_enum', compact('rivers'));
     }
 
     /**
@@ -114,12 +105,10 @@ class SidatDataController extends Controller
             'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        // Handle fish photo upload with compression
+        // Handle fish photo upload
         if ($request->hasFile('fish_photo')) {
             $photo = $request->file('fish_photo');
             $filename = 'fish_' . time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-            
-            // Store the photo directly
             $photo->storeAs('sidat_photos', $filename, 'public');
             $validatedData['fish_photo'] = 'sidat_photos/' . $filename;
         }
@@ -142,7 +131,7 @@ class SidatDataController extends Controller
         SidatData::create($validatedData);
 
         if (Auth::user()->isEnum()) {
-            return redirect()->route('enum.sidat.create')->with('success', 'Tropical Anguillid Eel Data submitted for approval successfully!');
+            return redirect()->route('sidat.create')->with('success', 'Tropical Anguillid Eel Data submitted for approval successfully!');
         }
 
         return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data added successfully!');
@@ -236,6 +225,14 @@ class SidatDataController extends Controller
         $validatedData['month'] = $date->format('F');
         $validatedData['updated_by'] = Auth::id();
         $validatedData['hujan'] = $validatedData['hujan'] ?? false;
+
+        // Handle photo removal
+        if ($request->input('remove_photo') == '1' && !$request->hasFile('fish_photo')) {
+            if ($sidat->fish_photo && Storage::disk('public')->exists($sidat->fish_photo)) {
+                Storage::disk('public')->delete($sidat->fish_photo);
+            }
+            $validatedData['fish_photo'] = null;
+        }
 
         $sidat->update($validatedData);
 

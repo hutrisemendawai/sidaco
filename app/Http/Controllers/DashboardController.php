@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->isEnum()) {
-            return redirect()->route('enum.sidat.create');
+            return redirect()->route('sidat.create');
         }
 
         // --- Filter Logic ---

@@ -44,9 +44,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'enum'])->group(function () {
-    Route::get('/enum/sidat/create', [SidatDataController::class, 'enumCreate'])->name('enum.sidat.create');
-    // We will reuse sidat.store for both since both need to post.
-    // Or we can create enum store if it differs. Lets reuse resource store.
+    // Redirect enum dashboard or other specific enum routes if needed
 });
 
 Route::middleware('auth')->group(function () {
