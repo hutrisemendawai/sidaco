@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Exports\SidatDataExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Intervention\Image\Facades\Image;
 
 class SidatDataController extends Controller
 {
@@ -118,15 +117,10 @@ class SidatDataController extends Controller
         // Handle fish photo upload with compression
         if ($request->hasFile('fish_photo')) {
             $photo = $request->file('fish_photo');
-            $filename = 'fish_' . time() . '_' . uniqid() . '.jpg';
+            $filename = 'fish_' . time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
             
-            // Compress the image
-            $image = Image::make($photo)->resize(1200, 1200, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->encode('jpg', 75);
-            
-            Storage::disk('public')->put('sidat_photos/' . $filename, $image);
+            // Store the photo directly
+            $photo->storeAs('sidat_photos', $filename, 'public');
             $validatedData['fish_photo'] = 'sidat_photos/' . $filename;
         }
 
@@ -230,15 +224,10 @@ class SidatDataController extends Controller
             }
 
             $photo = $request->file('fish_photo');
-            $filename = 'fish_' . time() . '_' . uniqid() . '.jpg';
+            $filename = 'fish_' . time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
             
-            // Compress the image
-            $image = Image::make($photo)->resize(1200, 1200, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->encode('jpg', 75);
-            
-            Storage::disk('public')->put('sidat_photos/' . $filename, $image);
+            // Store the photo directly
+            $photo->storeAs('sidat_photos', $filename, 'public');
             $validatedData['fish_photo'] = 'sidat_photos/' . $filename;
         }
 

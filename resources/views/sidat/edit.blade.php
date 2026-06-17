@@ -274,20 +274,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const fishPhotoInput = document.getElementById('fish_photo');
     const photoDropZone = fishPhotoInput.parentElement;
     
+    // Make the drop zone clickable for file selection
+    photoDropZone.addEventListener('click', function(e) {
+        if (e.target !== fishPhotoInput) {
+            fishPhotoInput.click();
+        }
+    });
+    
     photoDropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         photoDropZone.classList.add('bg-indigo-50', 'border-indigo-500');
     });
     
-    photoDropZone.addEventListener('dragleave', () => {
+    photoDropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         photoDropZone.classList.remove('bg-indigo-50', 'border-indigo-500');
     });
     
     photoDropZone.addEventListener('drop', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         photoDropZone.classList.remove('bg-indigo-50', 'border-indigo-500');
-        if (e.dataTransfer.files.length) {
-            fishPhotoInput.files = e.dataTransfer.files;
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            // Create a DataTransfer object to set files
+            const dt = new DataTransfer();
+            dt.items.add(files[0]);
+            fishPhotoInput.files = dt.files;
         }
     });
 
@@ -295,13 +311,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const stageTypeSelect = document.getElementById('stage_type');
     const samplingWrapper = document.getElementById('sampling-wrapper');
     
-    stageTypeSelect.addEventListener('change', function() {
-        if (this.value === 'Glasseel') {
-            samplingWrapper.classList.remove('hidden');
-        } else {
-            samplingWrapper.classList.add('hidden');
-        }
-    });
+    if (stageTypeSelect && samplingWrapper) {
+        stageTypeSelect.addEventListener('change', function() {
+            if (this.value === 'Glasseel') {
+                samplingWrapper.classList.remove('hidden');
+            } else {
+                samplingWrapper.classList.add('hidden');
+            }
+        });
+    }
 
     // Location dropdowns
     const countrySelect = document.getElementById('country');
