@@ -25,23 +25,9 @@
                     <form method="POST" action="{{ route('sidat.store') }}" enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Tab Navigation -->
-                        <div class="mb-6 border-b border-gray-200">
-                            <div class="flex gap-8 -mb-px">
-                                <button type="button" onclick="switchTab('general')" id="tab-general" class="tab-button active pb-3 px-1 border-b-2 border-indigo-500 font-medium text-gray-800 text-sm">
-                                    {{ __('General Data') }}
-                                </button>
-                                <button type="button" onclick="switchTab('water-quality')" id="tab-water-quality" class="tab-button pb-3 px-1 border-b-2 border-transparent font-medium text-gray-600 text-sm hover:text-gray-800 hover:border-gray-300">
-                                    {{ __('Water Quality') }}
-                                </button>
-                                <button type="button" onclick="switchTab('stage')" id="tab-stage" class="tab-button pb-3 px-1 border-b-2 border-transparent font-medium text-gray-600 text-sm hover:text-gray-800 hover:border-gray-300">
-                                    {{ __('Stage') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Tab Content -->
-                        <div class="tab-content" id="general">
+                        <!-- General Data Section -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-indigo-500">{{ __('General Data') }}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Left Column -->
                                 <div>
@@ -153,8 +139,9 @@
                             </div>
                         </div>
 
-                        <!-- Water Quality Tab -->
-                        <div class="tab-content hidden" id="water-quality">
+                        <!-- Water Quality Section -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-indigo-500">{{ __('Water Quality') }}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Fish Photo -->
                                 <div>
@@ -206,8 +193,9 @@
                             </div>
                         </div>
 
-                        <!-- Stage Tab -->
-                        <div class="tab-content hidden" id="stage">
+                        <!-- Stage Section -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-indigo-500">{{ __('Stage') }}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Stage Type -->
                                 <div>
@@ -245,27 +233,6 @@
     </div>
 
 <script>
-function switchTab(tabName) {
-    // Hide all tab contents
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-    
-    // Remove active state from all buttons
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('border-indigo-500', 'text-gray-800', 'font-medium');
-        btn.classList.add('border-transparent', 'text-gray-600', 'hover:text-gray-800', 'hover:border-gray-300');
-    });
-    
-    // Show selected tab
-    document.getElementById(tabName).classList.remove('hidden');
-    
-    // Activate selected button
-    const tabButton = document.getElementById('tab-' + tabName);
-    tabButton.classList.remove('border-transparent', 'text-gray-600', 'hover:text-gray-800', 'hover:border-gray-300');
-    tabButton.classList.add('border-indigo-500', 'text-gray-800', 'font-medium');
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     // File upload preview
     const fishPhotoInput = document.getElementById('fish_photo');
