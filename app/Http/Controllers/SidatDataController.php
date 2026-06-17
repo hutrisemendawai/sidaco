@@ -6,9 +6,11 @@ use App\Models\SidatData;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Exports\SidatDataExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Intervention\Image\Facades\Image;
 
 class SidatDataController extends Controller
 {
@@ -104,13 +106,36 @@ class SidatDataController extends Controller
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],
+            'fish_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
+            'suhu' => ['nullable', 'numeric', 'min:-50', 'max:100'],
+            'ph_air' => ['nullable', 'numeric', 'min:0', 'max:14'],
+            'salinitas' => ['nullable', 'numeric', 'min:0', 'max:50'],
+            'hujan' => ['nullable', 'boolean'],
+            'stage_type' => ['nullable', 'string', 'in:Glasseel,Elver,Yellow Eel'],
+            'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        // Handle fish photo upload with compression
+        if ($request->hasFile('fish_photo')) {
+            $photo = $request->file('fish_photo');
+            $filename = 'fish_' . time() . '_' . uniqid() . '.jpg';
+            
+            // Compress the image
+            $image = Image::make($photo)->resize(1200, 1200, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->encode('jpg', 75);
+            
+            Storage::disk('public')->put('sidat_photos/' . $filename, $image);
+            $validatedData['fish_photo'] = 'sidat_photos/' . $filename;
+        }
 
         $date = Carbon::parse($validatedData['date']);
         $validatedData['day'] = $date->format('l');
         $validatedData['month'] = $date->format('F');
         $validatedData['user_id'] = Auth::id();
         $validatedData['updated_by'] = Auth::id();
+        $validatedData['hujan'] = $validatedData['hujan'] ?? false;
 
         if (Auth::user()->isEnum()) {
             $validatedData['iscreatedbyenum'] = true;
@@ -188,12 +213,40 @@ class SidatDataController extends Controller
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],
+            'fish_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
+            'suhu' => ['nullable', 'numeric', 'min:-50', 'max:100'],
+            'ph_air' => ['nullable', 'numeric', 'min:0', 'max:14'],
+            'salinitas' => ['nullable', 'numeric', 'min:0', 'max:50'],
+            'hujan' => ['nullable', 'boolean'],
+            'stage_type' => ['nullable', 'string', 'in:Glasseel,Elver,Yellow Eel'],
+            'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        // Handle fish photo upload with compression
+        if ($request->hasFile('fish_photo')) {
+            // Delete old photo if exists
+            if ($sidat->fish_photo && Storage::disk('public')->exists($sidat->fish_photo)) {
+                Storage::disk('public')->delete($sidat->fish_photo);
+            }
+
+            $photo = $request->file('fish_photo');
+            $filename = 'fish_' . time() . '_' . uniqid() . '.jpg';
+            
+            // Compress the image
+            $image = Image::make($photo)->resize(1200, 1200, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->encode('jpg', 75);
+            
+            Storage::disk('public')->put('sidat_photos/' . $filename, $image);
+            $validatedData['fish_photo'] = 'sidat_photos/' . $filename;
+        }
 
         $date = Carbon::parse($validatedData['date']);
         $validatedData['day'] = $date->format('l');
         $validatedData['month'] = $date->format('F');
         $validatedData['updated_by'] = Auth::id();
+        $validatedData['hujan'] = $validatedData['hujan'] ?? false;
 
         $sidat->update($validatedData);
 
