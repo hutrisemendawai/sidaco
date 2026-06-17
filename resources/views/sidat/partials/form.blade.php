@@ -390,10 +390,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const districtSelect = document.getElementById('district');
 
     const existingData = {
-        country: "{{ old('country', $sidat->country ?? 'Indonesia') }}",
-        province: "{{ old('province', $sidat->province ?? '') }}",
-        regency: "{{ old('regency', $sidat->regency ?? '') }}",
-        district: "{{ old('district', $sidat->district ?? '') }}"
+        country: "{{ old('country', isset($sidat) ? ($sidat->country ?? 'Indonesia') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->country ?? 'Indonesia') : 'Indonesia')) }}",
+        province: "{{ old('province', isset($sidat) ? ($sidat->province ?? '') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->province ?? '') : '')) }}",
+        regency: "{{ old('regency', isset($sidat) ? ($sidat->regency ?? '') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->district ?? '') : '')) }}",
+        district: "{{ old('district', isset($sidat) ? ($sidat->district ?? '') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->sub_district ?? '') : '')) }}"
     };
 
     const provinceApiUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json';

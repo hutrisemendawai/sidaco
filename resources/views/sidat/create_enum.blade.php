@@ -5,14 +5,14 @@
             <div class="bg-white overflow-hidden shadow-lg rounded-xl">
                 <div class="p-8 bg-white">
                     @include('sidat.partials.form', [
-                        'sidat' => $sidat,
-                        'action' => route('sidat.update', $sidat->id),
-                        'method' => 'PUT',
-                        'submitText' => __('Update Data'),
-                        'cancelUrl' => route('sidat.index')
+                        'action' => route('sidat.store'),
+                        'submitText' => __('Save Data'),
+                        'cancelUrl' => route('dashboard')
                     ])
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+
+

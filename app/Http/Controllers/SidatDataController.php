@@ -72,6 +72,11 @@ class SidatDataController extends Controller
     public function create()
     {
         $rivers = SidatData::distinct()->pluck('river');
+        
+        if (Auth::user() && Auth::user()->isEnum()) {
+            return view('sidat.create_enum', compact('rivers'));
+        }
+        
         return view('sidat.create', compact('rivers'));
     }
 
@@ -131,7 +136,7 @@ class SidatDataController extends Controller
         SidatData::create($validatedData);
 
         if (Auth::user()->isEnum()) {
-            return redirect()->route('sidat.create')->with('success', 'Tropical Anguillid Eel Data submitted for approval successfully!');
+            return redirect()->route('enum.sidat.create')->with('success', 'Tropical Anguillid Eel Data submitted for approval successfully!');
         }
 
         return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data added successfully!');
@@ -155,7 +160,13 @@ class SidatDataController extends Controller
             abort(404, 'Data not found or not approved yet.');
         }
         $sidat->load(['user', 'updatedBy']);
-        return view('sidat.show', compact('sidat'));
+        
+        // Use different view based on authentication
+        if (Auth::check()) {
+            return view('sidat.show', compact('sidat'));
+        } else {
+            return view('sidat.show-guest', compact('sidat'));
+        }
     }
 
     /**

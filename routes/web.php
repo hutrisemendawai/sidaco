@@ -37,14 +37,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/approvals/{sidat}', [App\Http\Controllers\Admin\ApprovalController::class, 'update'])->name('admin.approvals.update');
     Route::patch('/approvals/{sidat}/approve', [App\Http\Controllers\Admin\ApprovalController::class, 'approve'])->name('admin.approvals.approve');
     Route::delete('/approvals/{sidat}/reject', [App\Http\Controllers\Admin\ApprovalController::class, 'reject'])->name('admin.approvals.reject');
-
-    // Create Enum Account
-    Route::get('/enumerators/create', [App\Http\Controllers\Admin\EnumeratorController::class, 'create'])->name('admin.enumerator.create');
-    Route::post('/enumerators', [App\Http\Controllers\Admin\EnumeratorController::class, 'store'])->name('admin.enumerator.store');
 });
 
 Route::middleware(['auth', 'enum'])->group(function () {
-    // Redirect enum dashboard or other specific enum routes if needed
+    Route::get('/enum/sidat/create', [SidatDataController::class, 'create'])->name('enum.sidat.create');
 });
 
 Route::middleware('auth')->group(function () {

@@ -1,17 +1,24 @@
-<x-app-layout>
-    <div class="py-12">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tropical Anguillid Eel Data - ID: {{ $sidat->id }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <style>
+        body { font-family: 'Figtree', sans-serif; }
+    </style>
+</head>
+<body class="font-sans text-gray-900 antialiased bg-gray-50">
+    <div class="min-h-screen py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <!-- Header Section -->
             <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg shadow-lg p-6 mb-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold">Tropical Anguillid Eel Data Details</h1>
-                        <p class="text-emerald-100 mt-2">Record ID: #{{ $sidat->id }}</p>
-                    </div>
-                    <a href="{{ route('sidat.index') }}" class="inline-flex items-center px-4 py-2 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        Back to Database
-                    </a>
+                <div>
+                    <h1 class="text-3xl font-bold">Tropical Anguillid Eel Data Details</h1>
+                    <p class="text-emerald-100 mt-2">Record ID: #{{ $sidat->id }}</p>
                 </div>
             </div>
 
@@ -216,4 +223,5 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</body>
+</html>

@@ -58,4 +58,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::post('register/bulk-enum', [RegisteredUserController::class, 'storeBulkEnum'])->name('register.bulk-enum');
 });

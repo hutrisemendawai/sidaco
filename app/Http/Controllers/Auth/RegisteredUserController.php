@@ -23,6 +23,52 @@ class RegisteredUserController extends Controller
     }
 
     /**
+     * Automatically generate bulk enumerator accounts.
+     */
+    public function storeBulkEnum(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'count' => ['required', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $count = (int) $request->count;
+        $year = date('Y');
+        $createdAccounts = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            // Find a unique code sequence
+            do {
+                $random = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+                $identifier = 'enum' . $year . $random;
+                $email = $identifier . '@seafdec.id';
+                $exists = User::where('email', $email)->exists();
+            } while ($exists);
+
+            $user = User::create([
+                'first_name' => $identifier,
+                'middle_name' => null,
+                'last_name' => '',
+                'birth_date' => now()->format('Y-m-d'),
+                'address' => '-',
+                'phone_number' => '080000000000', // Pre-input safe dummy phone numbers that meet registration rules
+                'email' => $email,
+                'password' => Hash::make($identifier),
+                'role' => 'enum',
+                'country' => 'Indonesia',
+                'province' => null,
+                'district' => null,
+                'sub_district' => null,
+                'profile_photo_path' => null,
+            ]);
+
+            event(new Registered($user));
+            $createdAccounts[] = $identifier;
+        }
+
+        return redirect(route('admin.users.index'))->with('success', $count . ' Enumerator accounts successfully auto-generated! Usernames: ' . implode(', ', $createdAccounts) . '. (Passwords are identical to their respective username, emails are username@seafdec.id).');
+    }
+
+    /**
      * Handle an incoming registration request.
      *
      * @throws \Illuminate\Validation\ValidationException
