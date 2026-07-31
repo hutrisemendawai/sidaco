@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\SidatData;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -19,175 +20,217 @@ class DashboardController extends Controller
             return redirect()->route('enum.sidat.create');
         }
 
+        $userCountry = $this->getAuthenticatedUserCountry();
+        $countryScopeMissing = $userCountry === null;
+
         // --- Filter Logic ---
         $selectedYear = $request->input('year');
         $selectedMonth = $request->input('month');
-        $selectedCountry = $request->input('country');
         $selectedProvince = $request->input('province');
         $selectedSpecies = $request->input('species');
 
-        $query = SidatData::query()->where('isapproved', true);
+        $cacheKey = implode(':', [
+            'dashboard',
+            'v2',
+            auth()->id(),
+            $userCountry ?? 'none',
+            $selectedYear ?: 'all',
+            $selectedMonth ?: 'all',
+            $selectedProvince ?: 'all',
+            $selectedSpecies ?: 'all',
+        ]);
 
-        if ($selectedYear) {
-            $query->whereYear('date', $selectedYear);
-        }
-        if ($selectedMonth) {
-            $query->whereMonth('date', $selectedMonth);
-        }
-        if ($selectedCountry) {
-            $query->where('country', $selectedCountry);
-        }
-        if ($selectedProvince) {
-            $query->where('province', $selectedProvince);
-        }
-        if ($selectedSpecies) {
-            $query->where('species_name', $selectedSpecies);
-        }
+        $dashboardData = Cache::remember($cacheKey, now()->addMinutes(10), function () use (
+            $userCountry,
+            $selectedYear,
+            $selectedMonth,
+            $selectedProvince,
+            $selectedSpecies
+        ) {
+            $scopedApprovedQuery = SidatData::query()->where('isapproved', true);
+            $this->applyCountryScope($scopedApprovedQuery, $userCountry);
 
-        // --- Data for Animated Counters ---
-        $totalEntries = (clone $query)->count();
-        $totalWeightThisYear = (clone $query)->whereYear('date', now()->year)->sum('total_weight_per_day');
-        $uniqueCountry = (clone $query)->distinct('country')->count('country');
+            $query = clone $scopedApprovedQuery;
 
-        // --- Data for Filter Dropdowns ---
-        // --- Data for Filter Dropdowns ---
-        $filterYears = SidatData::where('isapproved', true)
-            ->select(DB::raw('YEAR(date) as year'))
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
+            if ($selectedYear) {
+                $query->whereYear('date', $selectedYear);
+            }
+            if ($selectedMonth) {
+                $query->whereMonth('date', $selectedMonth);
+            }
+            if ($selectedProvince) {
+                $query->where('province', $selectedProvince);
+            }
+            if ($selectedSpecies) {
+                $query->where('species_name', $selectedSpecies);
+            }
 
-        $filterCountries = SidatData::where('isapproved', true)
-            ->select('country')
-            ->distinct()
-            ->orderBy('country', 'desc')
-            ->pluck('country');
+            // --- Data for Animated Counters ---
+            $totalEntries = (clone $query)->count();
+            $totalWeightThisYear = (clone $query)->whereYear('date', now()->year)->sum('total_weight_per_day');
+            $uniqueCountry = (clone $query)->distinct('country')->count('country');
 
-        if ($selectedCountry) {
-            // Kalau ada country terpilih → tampilkan province sesuai country
-            $filterProvinces = SidatData::where('isapproved', true)
-                ->where('country', $selectedCountry)
+            // --- Filter dropdown data (country-scoped) ---
+            $filterYears = (clone $scopedApprovedQuery)
+                ->select(DB::raw('YEAR(date) as year'))
+                ->distinct()
+                ->orderBy('year', 'desc')
+                ->pluck('year')
+                ->toArray();
+
+            $filterProvinces = (clone $scopedApprovedQuery)
+                ->when($selectedYear, fn($q) => $q->whereYear('date', $selectedYear))
+                ->when($selectedMonth, fn($q) => $q->whereMonth('date', $selectedMonth))
                 ->select('province')
+                ->whereNotNull('province')
+                ->where('province', '!=', '')
                 ->distinct()
                 ->orderBy('province')
-                ->pluck('province');
-        } else {
-            // Kalau tidak ada country terpilih → tampilkan semua province
-            $filterProvinces = SidatData::where('isapproved', true)
-                ->select('province')
+                ->pluck('province')
+                ->toArray();
+
+            $filterSpecies = (clone $scopedApprovedQuery)
+                ->when($selectedYear, fn($q) => $q->whereYear('date', $selectedYear))
+                ->when($selectedMonth, fn($q) => $q->whereMonth('date', $selectedMonth))
+                ->select('species_name')
+                ->whereNotNull('species_name')
+                ->where('species_name', '!=', '')
                 ->distinct()
-                ->orderBy('province')
-                ->pluck('province');
-        }
+                ->orderBy('species_name')
+                ->pluck('species_name')
+                ->toArray();
 
-        $filterSpecies = SidatData::where('isapproved', true)
-            ->select('species_name')
-            ->distinct()
-            ->orderBy('species_name')
-            ->pluck('species_name');
+            // --- Chart Data (filtered and country-scoped) ---
+            $yearlyData = (clone $query)->select(
+                DB::raw('YEAR(date) as year'),
+                DB::raw('SUM(total_weight_per_day) as total_weight')
+            )
+                ->groupBy(DB::raw('YEAR(date)'))
+                ->orderBy(DB::raw('YEAR(date)'), 'asc')
+                ->get();
 
+            $monthlyData = (clone $query)->select(
+                DB::raw('YEAR(date) as year'),
+                DB::raw('MONTH(date) as month'),
+                DB::raw('SUM(total_weight_per_day) as total_weight')
+            )
+                ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
+                ->orderBy(DB::raw('YEAR(date)'), 'asc')
+                ->orderBy(DB::raw('MONTH(date)'), 'asc')
+                ->get();
 
-        // --- Chart Data (using the filtered query) ---
-        $yearlyData = (clone $query)->select(
-            DB::raw('YEAR(date) as year'),
-            DB::raw('SUM(total_weight_per_day) as total_weight')
-        )
-            ->groupBy(DB::raw('YEAR(date)'))
-            ->orderBy(DB::raw('YEAR(date)'), 'asc')
-            ->get();
+            $yearlyCatchLabels = $yearlyData->map(fn($item) => Carbon::createFromDate($item->year)->format('Y'))->toArray();
+            $yearlyCatchData = $yearlyData->pluck('total_weight')->toArray();
 
-        // --- Chart Data (using the filtered query) ---
-        $monthlyData = (clone $query)->select(
-            DB::raw('YEAR(date) as year'),
-            DB::raw('MONTH(date) as month'),
-            DB::raw('SUM(total_weight_per_day) as total_weight')
-        )
-            ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
-            ->orderBy(DB::raw('YEAR(date)'), 'asc')
-            ->orderBy(DB::raw('MONTH(date)'), 'asc')
-            ->get();
+            $monthlyCatchLabels = $monthlyData->map(fn($item) => Carbon::createFromDate($item->year, $item->month)->format('F Y'))->toArray();
+            $monthlyCatchData = $monthlyData->pluck('total_weight')->toArray();
 
+            $speciesData = (clone $query)->select('species_name', DB::raw('COUNT(*) as count'))->groupBy('species_name')->orderBy('count', 'desc')->limit(5)->get();
+            $speciesLabels = $speciesData->pluck('species_name')->toArray();
+            $speciesCounts = $speciesData->pluck('count')->toArray();
 
-        $yearlyCatchLabels = $yearlyData->map(fn($item) => Carbon::createFromDate($item->year)->format('Y'));
-        $yearlyCatchData = $yearlyData->pluck('total_weight');
+            $countryData = (clone $query)->select('country', DB::raw('COUNT(*) as count'))->groupBy('country')->orderBy('count', 'desc')->limit(7)->get();
+            $countryLabels = $countryData->pluck('country')->toArray();
+            $countryCounts = $countryData->pluck('count')->toArray();
 
-        $monthlyCatchLabels = $monthlyData->map(fn($item) => Carbon::createFromDate($item->year, $item->month)->format('F Y'));
-        $monthlyCatchData = $monthlyData->pluck('total_weight');
+            $provinceData = (clone $query)->select('province', DB::raw('COUNT(*) as count'))->groupBy('province')->orderBy('count', 'desc')->limit(7)->get();
+            $provinceLabels = $provinceData->pluck('province')->toArray();
+            $provinceCounts = $provinceData->pluck('count')->toArray();
 
-        $speciesData = (clone $query)->select('species_name', DB::raw('COUNT(*) as count'))->groupBy('species_name')->orderBy('count', 'desc')->limit(5)->get();
-        $speciesLabels = $speciesData->pluck('species_name');
-        $speciesCounts = $speciesData->pluck('count');
+            $fishermanData = (clone $query)->select('fisher_name', DB::raw('COUNT(*) as count'))->groupBy('fisher_name')->orderBy('count', 'desc')->limit(5)->get();
+            $fishermanLabels = $fishermanData->pluck('fisher_name')->toArray();
+            $fishermanCounts = $fishermanData->pluck('count')->toArray();
 
-        $countryData = (clone $query)->select('country', DB::raw('COUNT(*) as count'))->groupBy('country')->orderBy('count', 'desc')->limit(7)->get();
-        $countryLabels = $countryData->pluck('country');
-        $countryCounts = $countryData->pluck('count');
+            $stageData = (clone $query)->select('stage', DB::raw('SUM(total_weight_per_day) as total_weight'))->groupBy('stage')->orderBy('total_weight', 'desc')->get();
+            $stageLabels = $stageData->pluck('stage')->toArray();
+            $stageWeights = $stageData->pluck('total_weight')->toArray();
 
-        $provinceData = (clone $query)->select('province', DB::raw('COUNT(*) as count'))->groupBy('province')->orderBy('count', 'desc')->limit(7)->get();
-        $provinceLabels = $provinceData->pluck('province');
-        $provinceCounts = $provinceData->pluck('count');
+            $riverData = (clone $query)->select('river', DB::raw('SUM(total_weight_per_day) as total_weight'))->groupBy('river')->orderBy('total_weight', 'desc')->limit(5)->get();
+            $riverLabels = $riverData->pluck('river')->toArray();
+            $riverWeights = $riverData->pluck('total_weight')->toArray();
 
+            $totalOfFisherData = (clone $query)->select('river', DB::raw('SUM(number_of_fisher) as total_of_fisher'))->groupBy('river')->orderBy('total_of_fisher', 'desc')->limit(5)->get();
+            $totalOfFisherLabels = $totalOfFisherData->pluck('river')->toArray();
+            $TotalOfFisherCounts = $totalOfFisherData->pluck('total_of_fisher')->toArray();
 
+            return compact(
+                'totalEntries',
+                'totalWeightThisYear',
+                'uniqueCountry',
+                'yearlyCatchLabels',
+                'yearlyCatchData',
+                'monthlyCatchLabels',
+                'monthlyCatchData',
+                'speciesLabels',
+                'speciesCounts',
+                'countryLabels',
+                'countryCounts',
+                'provinceLabels',
+                'provinceCounts',
+                'fishermanLabels',
+                'fishermanCounts',
+                'stageLabels',
+                'stageWeights',
+                'riverLabels',
+                'riverWeights',
+                'filterYears',
+                'filterProvinces',
+                'filterSpecies',
+                'totalOfFisherLabels',
+                'TotalOfFisherCounts'
+            );
+        });
 
-        $fishermanData = (clone $query)->select('fisher_name', DB::raw('COUNT(*) as count'))->groupBy('fisher_name')->orderBy('count', 'desc')->limit(5)->get();
-        $fishermanLabels = $fishermanData->pluck('fisher_name');
-        $fishermanCounts = $fishermanData->pluck('count');
-
-        $stageData = (clone $query)->select('stage', DB::raw('SUM(total_weight_per_day) as total_weight'))->groupBy('stage')->orderBy('total_weight', 'desc')->get();
-        $stageLabels = $stageData->pluck('stage');
-        $stageWeights = $stageData->pluck('total_weight');
-
-        $riverData = (clone $query)->select('river', DB::raw('SUM(total_weight_per_day) as total_weight'))->groupBy('river')->orderBy('total_weight', 'desc')->limit(5)->get();
-        $riverLabels = $riverData->pluck('river');
-        $riverWeights = $riverData->pluck('total_weight');
-
-        $totalOfFisherData = (clone $query)->select('river', DB::raw('SUM(number_of_fisher) as total_of_fisher'))->groupBy('river')->orderBy('total_of_fisher', 'desc')->limit(5)->get();
-        $totalOfFisherLabels = $totalOfFisherData->pluck('river');
-        $TotalOfFisherCounts = $totalOfFisherData->pluck('total_of_fisher');
-
-        return view('dashboard', compact(
-            'totalEntries',
-            'totalWeightThisYear',
-            'uniqueCountry',
-            'yearlyCatchLabels',
-            'yearlyCatchData',
-            'monthlyCatchLabels',
-            'monthlyCatchData',
-            'speciesLabels',
-            'speciesCounts',
-            'countryLabels',
-            'countryCounts',
-            'provinceLabels',
-            'provinceCounts',
-            'fishermanLabels',
-            'fishermanCounts',
-            'stageLabels',
-            'stageWeights',
-            'riverLabels',
-            'riverWeights',
-            'filterYears',
-            'filterCountries',
-            'filterProvinces',
-            'filterSpecies',
-            'selectedYear',
-            'selectedMonth',
-            'selectedCountry',
-            'selectedProvince',
-            'selectedSpecies',
-            'totalOfFisherLabels',
-            'TotalOfFisherCounts',
-            'request' // <-- FIX: Pass the request object to the view
-        ));
+        return view('dashboard', array_merge($dashboardData, [
+            'selectedYear' => $selectedYear,
+            'selectedMonth' => $selectedMonth,
+            'selectedProvince' => $selectedProvince,
+            'selectedSpecies' => $selectedSpecies,
+            'countryScopeMissing' => $countryScopeMissing,
+            'userCountry' => $userCountry,
+            'request' => $request,
+        ]));
     }
 
     public function getProvinces($country)
     {
+        $userCountry = $this->getAuthenticatedUserCountry();
+
+        if (!$userCountry || $country !== $userCountry) {
+            return response()->json([]);
+        }
+
         $provinces = SidatData::where('isapproved', true)
-            ->where('country', $country)
+            ->where('country', $userCountry)
             ->select('province')
+            ->whereNotNull('province')
+            ->where('province', '!=', '')
             ->distinct()
             ->orderBy('province')
             ->pluck('province');
 
         return response()->json($provinces);
+    }
+
+    private function applyCountryScope($query, ?string $country): void
+    {
+        if (!$country) {
+            $query->whereRaw('1 = 0');
+            return;
+        }
+
+        $query->where('country', $country);
+    }
+
+    private function getAuthenticatedUserCountry(): ?string
+    {
+        $country = auth()->user()?->country;
+
+        if (!is_string($country)) {
+            return null;
+        }
+
+        $country = trim($country);
+        return $country !== '' ? $country : null;
     }
 }

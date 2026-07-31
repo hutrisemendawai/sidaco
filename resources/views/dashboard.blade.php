@@ -79,7 +79,19 @@
             </div>
         </div>
 
-        <div x-data="{ open: {{ $request->anyFilled(['year', 'month', 'country', 'province', 'species']) ? 'true' : 'false' }} }" class="bg-white overflow-hidden rounded-3xl shadow-xs border border-gray-100 mb-8 transition-all duration-300 hover:shadow-md hover:border-gray-200">
+        <div class="mb-4">
+            @if($countryScopeMissing)
+                <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-900">
+                    Dashboard data is currently empty because your profile country is not set. Please update your profile country to load dashboard metrics.
+                </div>
+            @else
+                <div class="inline-flex items-center rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-800">
+                    Data Scope: {{ $userCountry }}
+                </div>
+            @endif
+        </div>
+
+        <div x-data="{ open: {{ $request->anyFilled(['year', 'month', 'province', 'species']) ? 'true' : 'false' }} }" class="bg-white overflow-hidden rounded-3xl shadow-xs border border-gray-100 mb-8 transition-all duration-300 hover:shadow-md hover:border-gray-200">
             <div class="p-6">
                 <button @click="open = !open" class="flex items-center justify-between w-full text-md font-bold text-slate-900 focus:outline-none select-none">
                     <div class="flex items-center space-x-2">
@@ -95,7 +107,7 @@
                 
                 <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-5 pt-5 border-t border-slate-50">
                     <form action="{{ route('dashboard') }}" method="GET">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             <div>
                                 <label for="year" class="block text-xs font-bold text-gray-400 tracking-wide uppercase mb-1.5">Harvest Year</label>
                                 <select name="year" id="year" class="block w-full rounded-xl border-gray-200 focus:border-emerald-500 focus:ring-emerald-500 text-xs font-medium py-2 px-3 shadow-2xs bg-slate-50/50">
@@ -112,15 +124,6 @@
                                     @for ($i = 1; $i <= 12; $i++)
                                         <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($i)->format('F') }}</option>
                                     @endfor
-                                </select>
-                            </div>
-                            <div>
-                                <label for="country" class="block text-xs font-bold text-gray-400 tracking-wide uppercase mb-1.5">Country</label>
-                                <select name="country" id="country" class="block w-full rounded-xl border-gray-200 focus:border-emerald-500 focus:ring-emerald-500 text-xs font-medium py-2 px-3 shadow-2xs bg-slate-50/50">
-                                    <option value="">All Countries</option>
-                                    @foreach($filterCountries as $country)
-                                        <option value="{{ $country }}" {{ $selectedCountry == $country ? 'selected' : '' }}>{{ $country }}</option>
-                                    @endforeach
                                 </select>
                             </div>
                             <div>
@@ -573,26 +576,5 @@
         });
     </script>
 
-    <script>
-        $(document).ready(function () {
-            $('#country').on('change', function () {
-                var country = $(this).val();
-                var provinceSelect = $('#province');
-                provinceSelect.empty().append('<option value="">All Provinces</option>');
-
-                if (country) {
-                    $.ajax({
-                        url: '{{ url("/get-provinces") }}/' + encodeURIComponent(country),
-                        type: 'GET',
-                        success: function (data) {
-                            $.each(data, function (index, province) {
-                                provinceSelect.append('<option value="' + province + '">' + province + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
-        });
-    </script>
 </x-app-layout>
 
