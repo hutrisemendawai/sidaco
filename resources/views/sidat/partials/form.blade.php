@@ -129,7 +129,12 @@
             <!-- Species Name -->
             <div>
                 <x-input-label for="species_name" :value="__('Species Name')" />
-                <x-text-input id="species_name" class="block mt-2 w-full py-2.5" type="text" name="species_name" :value="old('species_name', $sidat->species_name ?? '')" required />
+                <select id="species_name" name="species_name" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
+                    <option value="">Select Species</option>
+                    @foreach(($speciesOptions ?? collect()) as $speciesName)
+                        <option value="{{ $speciesName }}" {{ old('species_name', $sidat->species_name ?? '') == $speciesName ? 'selected' : '' }}>{{ $speciesName }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <!-- Operation Time -->

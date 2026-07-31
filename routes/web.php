@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SidatDataController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\SpeciesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FishingDataImportController;
 
@@ -37,6 +38,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/approvals/{sidat}', [App\Http\Controllers\Admin\ApprovalController::class, 'update'])->name('admin.approvals.update');
     Route::patch('/approvals/{sidat}/approve', [App\Http\Controllers\Admin\ApprovalController::class, 'approve'])->name('admin.approvals.approve');
     Route::delete('/approvals/{sidat}/reject', [App\Http\Controllers\Admin\ApprovalController::class, 'reject'])->name('admin.approvals.reject');
+
+    // Species master data
+    Route::get('/admin/species', [SpeciesController::class, 'index'])->name('admin.species.index');
+    Route::post('/admin/species', [SpeciesController::class, 'store'])->name('admin.species.store');
+    Route::put('/admin/species/{species}', [SpeciesController::class, 'update'])->name('admin.species.update');
+    Route::patch('/admin/species/{species}/toggle-status', [SpeciesController::class, 'toggleStatus'])->name('admin.species.toggle-status');
+    Route::delete('/admin/species/{species}', [SpeciesController::class, 'destroy'])->name('admin.species.destroy');
 });
 
 Route::middleware(['auth', 'enum'])->group(function () {

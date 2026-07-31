@@ -108,6 +108,13 @@
                                         <span class="text-sm">Data Approvals</span>
                                     </a>
 
+                                    <a href="{{ route('admin.species.index') }}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-gray-600 transition-all group {{ request()->routeIs('admin.species.*') ? 'sidebar-link-active' : '' }}">
+                                        <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a4 4 0 00-5.656 0L9 20.2l-1.772-1.772a4 4 0 10-5.656 5.656L3.343 25.8a4 4 0 005.657 0l4.772-4.772a4 4 0 000-5.657zM15 7a4 4 0 11-8 0 4 4 0 018 0z" transform="translate(0 -4)" />
+                                        </svg>
+                                        <span class="text-sm">Species Management</span>
+                                    </a>
+
                                     <a href="{{ route('register') }}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-gray-600 transition-all group {{ request()->routeIs('register') ? 'sidebar-link-active' : '' }}">
                                         <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -230,6 +237,12 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                         </svg>
                                         <span class="text-sm">Data Approvals</span>
+                                    </a>
+                                    <a href="{{ route('admin.species.index') }}" class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-50 text-gray-600 group {{ request()->routeIs('admin.species.*') ? 'sidebar-link-active' : '' }}">
+                                        <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 015 5c0 3.038-2.5 5.333-5 7.5-2.5-2.167-5-4.462-5-7.5a5 5 0 015-5zm0 11v9m-4-4h8" />
+                                        </svg>
+                                        <span class="text-sm">Species Management</span>
                                     </a>
                                     <a href="{{ route('register') }}" class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-50 text-gray-600 group {{ request()->routeIs('register') ? 'sidebar-link-active' : '' }}">
                                         <svg class="w-5 h-5 text-gray-400 group-hover:text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use App\Models\SidatData;
+use App\Models\Species;
 
 class ApprovalController extends Controller
 {
@@ -24,11 +26,15 @@ class ApprovalController extends Controller
     public function edit(SidatData $sidat)
     {
         $rivers = SidatData::distinct()->pluck('river');
-        return view('admin.approvals.edit', compact('sidat', 'rivers'));
+        $speciesOptions = Species::active()->orderBy('name')->pluck('name');
+
+        return view('admin.approvals.edit', compact('sidat', 'rivers', 'speciesOptions'));
     }
 
     public function update(Request $request, SidatData $sidat)
     {
+        $activeSpeciesNames = Species::active()->pluck('name')->all();
+
         $validatedData = $request->validate([
             'date' => ['required', 'date'],
             'country' => ['required', 'string', 'max:255'],
@@ -41,7 +47,7 @@ class ApprovalController extends Controller
             'number_of_fisher' => ['required', 'numeric', 'min:0'],
             'type_of_fishing_gear' => ['required', 'string', 'max:255'],
             'number_of_fishing_gear' => ['required', 'integer', 'min:0'],
-            'species_name' => ['required', 'string', 'max:255'],
+            'species_name' => ['required', 'string', 'max:255', Rule::in($activeSpeciesNames)],
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\SidatData;
+use App\Models\Species;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use App\Exports\SidatDataExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -72,12 +74,13 @@ class SidatDataController extends Controller
     public function create()
     {
         $rivers = SidatData::distinct()->pluck('river');
+        $speciesOptions = Species::active()->orderBy('name')->pluck('name');
         
         if (Auth::user() && Auth::user()->isEnum()) {
-            return view('sidat.create_enum', compact('rivers'));
+            return view('sidat.create_enum', compact('rivers', 'speciesOptions'));
         }
         
-        return view('sidat.create', compact('rivers'));
+        return view('sidat.create', compact('rivers', 'speciesOptions'));
     }
 
     /**
@@ -85,6 +88,8 @@ class SidatDataController extends Controller
      */
     public function store(Request $request)
     {
+        $activeSpeciesNames = Species::active()->pluck('name')->all();
+
         $validatedData = $request->validate([
             'date' => ['required', 'date'],
             'country' => ['required', 'string', 'max:255'],
@@ -97,7 +102,7 @@ class SidatDataController extends Controller
             'number_of_fisher' => ['required', 'numeric', 'min:0'],
             'type_of_fishing_gear' => ['required', 'string', 'max:255'],
             'number_of_fishing_gear' => ['required', 'integer', 'min:0'],
-            'species_name' => ['required', 'string', 'max:255'],
+            'species_name' => ['required', 'string', 'max:255', Rule::in($activeSpeciesNames)],
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],
@@ -179,7 +184,9 @@ class SidatDataController extends Controller
         }
 
         $rivers = SidatData::distinct()->pluck('river');
-        return view('sidat.edit', compact('sidat', 'rivers'));
+        $speciesOptions = Species::active()->orderBy('name')->pluck('name');
+
+        return view('sidat.edit', compact('sidat', 'rivers', 'speciesOptions'));
     }
 
     /**
@@ -190,6 +197,8 @@ class SidatDataController extends Controller
         if (!Auth::user()->isAdmin() && $sidat->user_id !== Auth::id()) {
             abort(403, 'Unauthorized Action');
         }
+
+        $activeSpeciesNames = Species::active()->pluck('name')->all();
 
         $validatedData = $request->validate([
             'date' => ['required', 'date'],
@@ -203,7 +212,7 @@ class SidatDataController extends Controller
             'number_of_fisher' => ['required', 'numeric', 'min:0'],
             'type_of_fishing_gear' => ['required', 'string', 'max:255'],
             'number_of_fishing_gear' => ['required', 'integer', 'min:0'],
-            'species_name' => ['required', 'string', 'max:255'],
+            'species_name' => ['required', 'string', 'max:255', Rule::in($activeSpeciesNames)],
             'operation_time' => ['required', 'numeric', 'min:0'],
             'total_weight_per_day' => ['required', 'numeric', 'min:0'],
             'price_per_kg' => ['required', 'numeric', 'min:0'],

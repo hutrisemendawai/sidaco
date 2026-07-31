@@ -34,7 +34,7 @@
                         <div class="hidden sm:flex sm:items-center">
                             <x-dropdown align="left" width="48">
                                 <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out {{ request()->routeIs('register') || request()->routeIs('admin.users.index') || request()->routeIs('admin.approvals.*') ? 'border-indigo-400 text-gray-900' : '' }}">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out {{ request()->routeIs('register') || request()->routeIs('admin.users.index') || request()->routeIs('admin.approvals.*') || request()->routeIs('admin.species.*') ? 'border-indigo-400 text-gray-900' : '' }}">
                                         <div>{{ __('Admin Panel') }}</div>
 
                                         <div class="ms-1">
@@ -56,6 +56,10 @@
 
                                     <x-dropdown-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
                                         {{ __('Data Approval') }}
+                                    </x-dropdown-link>
+
+                                    <x-dropdown-link :href="route('admin.species.index')" :active="request()->routeIs('admin.species.*')">
+                                        {{ __('Species Management') }}
                                     </x-dropdown-link>
                                 </x-slot>
                             </x-dropdown>
@@ -151,6 +155,10 @@
 
                         <x-responsive-nav-link :href="route('admin.approvals.index')" :active="request()->routeIs('admin.approvals.*')">
                             {{ __('Data Approval') }}
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link :href="route('admin.species.index')" :active="request()->routeIs('admin.species.*')">
+                            {{ __('Species Management') }}
                         </x-responsive-nav-link>
                     </div>
                 </div>
