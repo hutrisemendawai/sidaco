@@ -52,14 +52,12 @@
             <!-- Country -->
             <div>
                 <x-input-label for="country" :value="__('Country')" />
-                <select id="country" name="country" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
-                    @php
-                        $selectedCountry = old('country', isset($sidat) ? ($sidat->country ?? 'Indonesia') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->country ?? 'Indonesia') : 'Indonesia'));
-                    @endphp
-                    @foreach(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'] as $countryOption)
-                        <option value="{{ $countryOption }}" {{ $selectedCountry === $countryOption ? 'selected' : '' }}>{{ $countryOption }}</option>
-                    @endforeach
-                </select>
+                @php
+                    $selectedCountry = old('country', isset($sidat)
+                        ? ($sidat->country ?? (Auth::user()->country ?? 'Indonesia'))
+                        : (Auth::user()->country ?? 'Indonesia'));
+                @endphp
+                <x-text-input id="country" class="block mt-2 w-full py-2.5 bg-gray-100 text-gray-700" type="text" name="country" :value="$selectedCountry" readonly required />
             </div>
 
             <!-- Province -->
