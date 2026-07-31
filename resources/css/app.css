@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+	.auth-ambient {
+		background:
+			radial-gradient(circle at top left, rgba(16, 185, 129, 0.18), transparent 34%),
+			radial-gradient(circle at 82% 18%, rgba(14, 116, 144, 0.16), transparent 28%),
+			linear-gradient(180deg, #f8fafc 0%, #ecfdf5 52%, #f8fafc 100%);
+	}
+
+	.auth-panel {
+		background: linear-gradient(155deg, rgba(6, 78, 59, 0.98), rgba(15, 118, 110, 0.92));
+	}
+
+	.auth-grid-noise {
+		background-image:
+			linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+		background-size: 22px 22px;
+	}
+
+	.auth-card-shadow {
+		box-shadow: 0 32px 80px -36px rgba(15, 23, 42, 0.38);
+	}
+
+	.animate-auth-fade-up {
+		animation: auth-fade-up 0.7s ease-out both;
+	}
+
+	.animate-auth-drift {
+		animation: auth-drift 10s ease-in-out infinite;
+	}
+}
+
+@keyframes auth-fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes auth-drift {
+	0%,
+	100% {
+		transform: translate3d(0, 0, 0);
+	}
+
+	50% {
+		transform: translate3d(0, -12px, 0);
+	}
+}

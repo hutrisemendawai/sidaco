@@ -1,43 +1,56 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="mx-auto w-full max-w-sm">
+        <div class="mb-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-600/80">Welcome back</p>
+            <h2 class="mt-3 text-3xl font-semibold tracking-tight text-slate-900">Sign in to continue</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-600">Use your registered account to access submissions, approvals, and reporting tools.</p>
+        </div>
 
-    <form method="POST" action="{{ route('login') }}">
+        <x-auth-session-status
+            class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+            :status="session('status')"
+        />
+
+        <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+            <div>
+                <x-input-label for="email" :value="__('Email address')" class="text-sm font-medium text-slate-700" />
+                <x-text-input
+                    id="email"
+                    class="mt-2 block w-full rounded-2xl border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-emerald-500 focus:ring-emerald-500"
+                    type="email"
+                    name="email"
+                    :value="old('email')"
+                    required
+                    autofocus
+                    autocomplete="username"
+                    placeholder="name@example.com"
+                />
+                <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm" />
+            </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <div>
+                <x-input-label for="password" :value="__('Password')" class="text-sm font-medium text-slate-700" />
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+                <x-text-input
+                    id="password"
+                    class="mt-2 block w-full rounded-2xl border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-emerald-500 focus:ring-emerald-500"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="Enter your password"
+                />
+                <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm" />
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-sky-600 shadow-sm focus:ring-sky-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            {{-- Registration is disabled for public. Only admins can create users. --}}
-
-            <x-primary-button class="ms-3">
+            <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+            >
                 {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
+            </button>
+        </form>
+    </div>
 </x-guest-layout>
