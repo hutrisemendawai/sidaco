@@ -15,8 +15,15 @@ class ApprovalController extends Controller
 {
     public function index()
     {
+        $adminCountry = $this->getAdminCountry();
+
         $pendingData = SidatData::with('user')
             ->where('isapproved', false)
+            ->when($adminCountry, function ($query) use ($adminCountry) {
+                $query->where('country', $adminCountry);
+            }, function ($query) {
+                $query->whereRaw('1 = 0');
+            })
             ->latest('created_at')
             ->paginate(15);
 
@@ -25,6 +32,8 @@ class ApprovalController extends Controller
 
     public function edit(SidatData $sidat)
     {
+        $this->ensureAdminCountryAccess($sidat);
+
         $rivers = SidatData::distinct()->pluck('river');
         $speciesOptions = Species::active()->orderBy('name')->pluck('name');
 
@@ -33,6 +42,8 @@ class ApprovalController extends Controller
 
     public function update(Request $request, SidatData $sidat)
     {
+        $this->ensureAdminCountryAccess($sidat);
+
         $activeSpeciesNames = Species::active()->pluck('name')->all();
 
         $validatedData = $request->validate([
@@ -59,6 +70,8 @@ class ApprovalController extends Controller
             'stage_type' => ['nullable', 'string', 'in:Glasseel,Elver,Yellow Eel'],
             'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        $validatedData['country'] = $this->getAdminCountryOrAbort();
 
         // Handle fish photo upload
         if ($request->hasFile('fish_photo')) {
@@ -98,6 +111,8 @@ class ApprovalController extends Controller
 
     public function approve(SidatData $sidat)
     {
+        $this->ensureAdminCountryAccess($sidat);
+
         $sidat->update([
             'isapproved' => true,
             'updated_by' => Auth::id(),
@@ -108,8 +123,42 @@ class ApprovalController extends Controller
 
     public function reject(SidatData $sidat)
     {
+        $this->ensureAdminCountryAccess($sidat);
+
         $sidat->delete();
 
         return redirect()->route('admin.approvals.index')->with('success', 'Data has been rejected and deleted.');
+    }
+
+    private function ensureAdminCountryAccess(SidatData $sidat): void
+    {
+        $country = $this->getAdminCountry();
+
+        if (!$country || $sidat->country !== $country) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    private function getAdminCountryOrAbort(): string
+    {
+        $country = $this->getAdminCountry();
+
+        if (!$country) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return $country;
+    }
+
+    private function getAdminCountry(): ?string
+    {
+        $country = Auth::user()?->country;
+
+        if (!is_string($country)) {
+            return null;
+        }
+
+        $country = trim($country);
+        return $country !== '' ? $country : null;
     }
 }

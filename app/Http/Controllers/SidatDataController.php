@@ -26,7 +26,9 @@ class SidatDataController extends Controller
 
         $query = SidatData::query()->with(['user', 'updatedBy'])->where('isapproved', true);
 
-        if (!Auth::user()->isAdmin()) {
+        if (Auth::user()->isAdmin()) {
+            $this->applyAdminCountryScope($query);
+        } else {
             $query->where('user_id', Auth::id());
         }
 
@@ -115,6 +117,10 @@ class SidatDataController extends Controller
             'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
 
+        if (Auth::user()->isAdmin()) {
+            $validatedData['country'] = $this->getAdminCountryOrAbort();
+        }
+
         // Handle fish photo upload
         if ($request->hasFile('fish_photo')) {
             $photo = $request->file('fish_photo');
@@ -164,6 +170,11 @@ class SidatDataController extends Controller
         if (!$sidat->isapproved) {
             abort(404, 'Data not found or not approved yet.');
         }
+
+        if (Auth::check() && Auth::user()->isAdmin()) {
+            $this->ensureAdminCountryAccess($sidat);
+        }
+
         $sidat->load(['user', 'updatedBy']);
         
         // Use different view based on authentication
@@ -179,8 +190,10 @@ class SidatDataController extends Controller
      */
     public function edit(SidatData $sidat)
     {
-        if (!Auth::user()->isAdmin() && $sidat->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized Action');
+        if (Auth::user()->isAdmin()) {
+            $this->ensureAdminCountryAccess($sidat);
+        } elseif ($sidat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
         }
 
         $rivers = SidatData::distinct()->pluck('river');
@@ -194,8 +207,10 @@ class SidatDataController extends Controller
      */
     public function update(Request $request, SidatData $sidat)
     {
-        if (!Auth::user()->isAdmin() && $sidat->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized Action');
+        if (Auth::user()->isAdmin()) {
+            $this->ensureAdminCountryAccess($sidat);
+        } elseif ($sidat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
         }
 
         $activeSpeciesNames = Species::active()->pluck('name')->all();
@@ -224,6 +239,10 @@ class SidatDataController extends Controller
             'stage_type' => ['nullable', 'string', 'in:Glasseel,Elver,Yellow Eel'],
             'sampling' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        if (Auth::user()->isAdmin()) {
+            $validatedData['country'] = $this->getAdminCountryOrAbort();
+        }
 
         // Handle fish photo upload with compression
         if ($request->hasFile('fish_photo')) {
@@ -264,12 +283,58 @@ class SidatDataController extends Controller
      */
     public function destroy(SidatData $sidat)
     {
-        if (!Auth::user()->isAdmin() && $sidat->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized Action');
+        if (Auth::user()->isAdmin()) {
+            $this->ensureAdminCountryAccess($sidat);
+        } elseif ($sidat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
         }
 
         $sidat->delete();
 
         return redirect()->route('sidat.index')->with('success', 'Tropical Anguillid Eel Data deleted successfully!');
+    }
+
+    private function applyAdminCountryScope($query): void
+    {
+        $country = $this->getAdminCountry();
+
+        if (!$country) {
+            $query->whereRaw('1 = 0');
+            return;
+        }
+
+        $query->where('country', $country);
+    }
+
+    private function ensureAdminCountryAccess(SidatData $sidat): void
+    {
+        $country = $this->getAdminCountry();
+
+        if (!$country || $sidat->country !== $country) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    private function getAdminCountryOrAbort(): string
+    {
+        $country = $this->getAdminCountry();
+
+        if (!$country) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return $country;
+    }
+
+    private function getAdminCountry(): ?string
+    {
+        $country = Auth::user()?->country;
+
+        if (!is_string($country)) {
+            return null;
+        }
+
+        $country = trim($country);
+        return $country !== '' ? $country : null;
     }
 }

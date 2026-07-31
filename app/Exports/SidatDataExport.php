@@ -25,7 +25,9 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
 
         $query->where('isapproved', true);
 
-        if (!Auth::user()->isAdmin()) {
+        if (Auth::user()->isAdmin()) {
+            $this->applyAdminCountryScope($query);
+        } else {
             $query->where('user_id', Auth::id());
         }
 
@@ -46,6 +48,30 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
         }
 
         return $query->latest('date');
+    }
+
+    protected function applyAdminCountryScope($query): void
+    {
+        $country = $this->getAdminCountry();
+
+        if (!$country) {
+            $query->whereRaw('1 = 0');
+            return;
+        }
+
+        $query->where('country', $country);
+    }
+
+    protected function getAdminCountry(): ?string
+    {
+        $country = Auth::user()?->country;
+
+        if (!is_string($country)) {
+            return null;
+        }
+
+        $country = trim($country);
+        return $country !== '' ? $country : null;
     }
 
 
