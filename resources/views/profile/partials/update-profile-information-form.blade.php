@@ -58,35 +58,55 @@
         <div>
             <x-input-label for="country" :value="__('Country')" />
             <select id="country" name="country" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                <option value="Indonesia" selected>Indonesia</option>
+                @php
+                    $selectedCountry = old('country', $user->country ?? 'Indonesia');
+                @endphp
+                @foreach(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'] as $countryOption)
+                    <option value="{{ $countryOption }}" {{ $selectedCountry === $countryOption ? 'selected' : '' }}>{{ $countryOption }}</option>
+                @endforeach
             </select>
             <x-input-error class="mt-2" :messages="$errors->get('country')" />
         </div>
 
         <!-- Province -->
-        <div>
+        <div id="province-select-wrapper">
             <x-input-label for="province" :value="__('Province')" />
-            <select id="province" name="province" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required data-selected="{{ old('province', $user->province) }}">
+            <select id="province_select" name="province" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required data-selected="{{ old('province', $user->province) }}">
                 <option value="">Select Province</option>
             </select>
             <x-input-error class="mt-2" :messages="$errors->get('province')" />
         </div>
+        <div id="province-input-wrapper" class="hidden">
+            <x-input-label for="province_input" :value="__('Province')" />
+            <x-text-input id="province_input" name="province" type="text" class="mt-1 block w-full" :value="old('province', $user->province)" disabled />
+            <x-input-error class="mt-2" :messages="$errors->get('province')" />
+        </div>
 
         <!-- District (Regency/City) -->
-        <div>
+        <div id="district-select-wrapper">
             <x-input-label for="district" :value="__('Regency/City (District)')" />
-            <select id="district" name="district" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required data-selected="{{ old('district', $user->district) }}">
+            <select id="district_select" name="district" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required data-selected="{{ old('district', $user->district) }}">
                 <option value="">Select Regency/City</option>
             </select>
             <x-input-error class="mt-2" :messages="$errors->get('district')" />
         </div>
+        <div id="district-input-wrapper" class="hidden">
+            <x-input-label for="district_input" :value="__('Regency/City (District)')" />
+            <x-text-input id="district_input" name="district" type="text" class="mt-1 block w-full" :value="old('district', $user->district)" disabled />
+            <x-input-error class="mt-2" :messages="$errors->get('district')" />
+        </div>
 
         <!-- Sub-District -->
-        <div>
+        <div id="sub-district-select-wrapper">
             <x-input-label for="sub_district" :value="__('Sub-District')" />
-            <select id="sub_district" name="sub_district" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required data-selected="{{ old('sub_district', $user->sub_district) }}">
+            <select id="sub_district_select" name="sub_district" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required data-selected="{{ old('sub_district', $user->sub_district) }}">
                 <option value="">Select Sub-District</option>
             </select>
+            <x-input-error class="mt-2" :messages="$errors->get('sub_district')" />
+        </div>
+        <div id="sub-district-input-wrapper" class="hidden">
+            <x-input-label for="sub_district_input" :value="__('Sub-District')" />
+            <x-text-input id="sub_district_input" name="sub_district" type="text" class="mt-1 block w-full" :value="old('sub_district', $user->sub_district)" disabled />
             <x-input-error class="mt-2" :messages="$errors->get('sub_district')" />
         </div>
 
@@ -180,9 +200,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ---- LOCATION API ----
-    const provinceSelect = document.getElementById('province');
-    const districtSelect = document.getElementById('district');
-    const subDistrictSelect = document.getElementById('sub_district');
+    const countrySelect = document.getElementById('country');
+    const provinceSelect = document.getElementById('province_select');
+    const districtSelect = document.getElementById('district_select');
+    const subDistrictSelect = document.getElementById('sub_district_select');
+    const provinceInput = document.getElementById('province_input');
+    const districtInput = document.getElementById('district_input');
+    const subDistrictInput = document.getElementById('sub_district_input');
+    const provinceSelectWrapper = document.getElementById('province-select-wrapper');
+    const districtSelectWrapper = document.getElementById('district-select-wrapper');
+    const subDistrictSelectWrapper = document.getElementById('sub-district-select-wrapper');
+    const provinceInputWrapper = document.getElementById('province-input-wrapper');
+    const districtInputWrapper = document.getElementById('district-input-wrapper');
+    const subDistrictInputWrapper = document.getElementById('sub-district-input-wrapper');
 
     const provinceApiUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json';
     const regencyApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
@@ -191,6 +221,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedProv = provinceSelect.getAttribute('data-selected');
     const selectedDist = districtSelect.getAttribute('data-selected');
     const selectedSubDist = subDistrictSelect.getAttribute('data-selected');
+
+    function setIndonesiaMode(isIndonesia) {
+        provinceSelectWrapper.classList.toggle('hidden', !isIndonesia);
+        districtSelectWrapper.classList.toggle('hidden', !isIndonesia);
+        subDistrictSelectWrapper.classList.toggle('hidden', !isIndonesia);
+        provinceInputWrapper.classList.toggle('hidden', isIndonesia);
+        districtInputWrapper.classList.toggle('hidden', isIndonesia);
+        subDistrictInputWrapper.classList.toggle('hidden', isIndonesia);
+
+        provinceSelect.disabled = !isIndonesia;
+        districtSelect.disabled = !isIndonesia;
+        subDistrictSelect.disabled = !isIndonesia;
+        provinceInput.disabled = isIndonesia;
+        districtInput.disabled = isIndonesia;
+        subDistrictInput.disabled = isIndonesia;
+
+        provinceSelect.required = isIndonesia;
+        districtSelect.required = isIndonesia;
+        subDistrictSelect.required = isIndonesia;
+        provinceInput.required = !isIndonesia;
+        districtInput.required = !isIndonesia;
+        subDistrictInput.required = !isIndonesia;
+    }
 
     function fetchProvinces() {
         fetch(provinceApiUrl)
@@ -211,6 +264,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (provinceSelect.value) fetchRegencies();
             })
             .catch(error => console.error('Error fetching provinces:', error));
+    }
+
+    function switchLocationMode() {
+        const isIndonesia = countrySelect.value === 'Indonesia';
+        setIndonesiaMode(isIndonesia);
+
+        if (isIndonesia) {
+            fetchProvinces();
+        }
     }
 
     function fetchRegencies() {
@@ -278,8 +340,9 @@ document.addEventListener('DOMContentLoaded', function () {
         subDistrictSelect.value = "";
         fetchDistricts();
     });
+    countrySelect.addEventListener('change', switchLocationMode);
 
-    fetchProvinces();
+    switchLocationMode();
 });
 </script>
 </section>

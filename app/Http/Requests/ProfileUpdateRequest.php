@@ -23,7 +23,7 @@ class ProfileUpdateRequest extends FormRequest
             'birth_date' => ['required', 'date'],
             'address' => ['required', 'string'],
             'phone_number' => ['required', 'string', 'max:20'],
-            'country' => ['nullable', 'string', 'max:255'],
+            'country' => ['required', 'string', Rule::in(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'])],
             'province' => ['nullable', 'string', 'max:255'],
             'district' => ['nullable', 'string', 'max:255'],
             'sub_district' => ['nullable', 'string', 'max:255'],

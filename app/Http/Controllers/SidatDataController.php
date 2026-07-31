@@ -92,7 +92,7 @@ class SidatDataController extends Controller
 
         $validatedData = $request->validate([
             'date' => ['required', 'date'],
-            'country' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', Rule::in(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'])],
             'province' => ['required', 'string', 'max:255'],
             'regency' => ['required', 'string', 'max:255'],
             'district' => ['required', 'string', 'max:255'],
@@ -202,7 +202,7 @@ class SidatDataController extends Controller
 
         $validatedData = $request->validate([
             'date' => ['required', 'date'],
-            'country' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', Rule::in(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'])],
             'province' => ['required', 'string', 'max:255'],
             'regency' => ['required', 'string', 'max:255'],
             'district' => ['required', 'string', 'max:255'],

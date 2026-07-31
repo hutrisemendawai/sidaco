@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -86,7 +87,7 @@ class RegisteredUserController extends Controller
             'phone_number' => ['required', 'string', 'regex:/^08[0-9]{8,11}$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'country' => ['nullable', 'string', 'max:255'],
+            'country' => ['required', 'string', Rule::in(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'])],
             'province' => ['nullable', 'string', 'max:255'],
             'district' => ['nullable', 'string', 'max:255'],
             'sub_district' => ['nullable', 'string', 'max:255'],

@@ -53,32 +53,49 @@
             <div>
                 <x-input-label for="country" :value="__('Country')" />
                 <select id="country" name="country" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
-                    <option value="">Select Country</option>
+                    @php
+                        $selectedCountry = old('country', isset($sidat) ? ($sidat->country ?? 'Indonesia') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->country ?? 'Indonesia') : 'Indonesia'));
+                    @endphp
+                    @foreach(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam'] as $countryOption)
+                        <option value="{{ $countryOption }}" {{ $selectedCountry === $countryOption ? 'selected' : '' }}>{{ $countryOption }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <!-- Province -->
-            <div>
+            <div id="province-select-wrapper">
                 <x-input-label for="province" :value="__('Province')" />
-                <select id="province" name="province" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
+                <select id="province_select" name="province" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
                     <option value="">Select Province</option>
                 </select>
             </div>
+            <div id="province-input-wrapper" class="hidden">
+                <x-input-label for="province_input" :value="__('Province')" />
+                <x-text-input id="province_input" class="block mt-2 w-full py-2.5" type="text" name="province" :value="old('province', isset($sidat) ? ($sidat->province ?? '') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->province ?? '') : ''))" disabled />
+            </div>
 
             <!-- Regency/City -->
-            <div>
+            <div id="regency-select-wrapper">
                 <x-input-label for="regency" :value="__('Regency/City')" />
-                <select id="regency" name="regency" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
+                <select id="regency_select" name="regency" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
                     <option value="">Select Regency/City</option>
                 </select>
             </div>
+            <div id="regency-input-wrapper" class="hidden">
+                <x-input-label for="regency_input" :value="__('Regency/City')" />
+                <x-text-input id="regency_input" class="block mt-2 w-full py-2.5" type="text" name="regency" :value="old('regency', isset($sidat) ? ($sidat->regency ?? '') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->district ?? '') : ''))" disabled />
+            </div>
 
             <!-- District -->
-            <div>
+            <div id="district-select-wrapper">
                 <x-input-label for="district" :value="__('District')" />
-                <select id="district" name="district" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
+                <select id="district_select" name="district" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-gray-700" required>
                     <option value="">Select District</option>
                 </select>
+            </div>
+            <div id="district-input-wrapper" class="hidden">
+                <x-input-label for="district_input" :value="__('District')" />
+                <x-text-input id="district_input" class="block mt-2 w-full py-2.5" type="text" name="district" :value="old('district', isset($sidat) ? ($sidat->district ?? '') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->sub_district ?? '') : ''))" disabled />
             </div>
 
             <!-- River -->
@@ -392,9 +409,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Location API logic
     const countrySelect = document.getElementById('country');
-    const provinceSelect = document.getElementById('province');
-    const regencySelect = document.getElementById('regency');
-    const districtSelect = document.getElementById('district');
+    const provinceSelect = document.getElementById('province_select');
+    const regencySelect = document.getElementById('regency_select');
+    const districtSelect = document.getElementById('district_select');
+    const provinceInput = document.getElementById('province_input');
+    const regencyInput = document.getElementById('regency_input');
+    const districtInput = document.getElementById('district_input');
+    const provinceSelectWrapper = document.getElementById('province-select-wrapper');
+    const regencySelectWrapper = document.getElementById('regency-select-wrapper');
+    const districtSelectWrapper = document.getElementById('district-select-wrapper');
+    const provinceInputWrapper = document.getElementById('province-input-wrapper');
+    const regencyInputWrapper = document.getElementById('regency-input-wrapper');
+    const districtInputWrapper = document.getElementById('district-input-wrapper');
 
     const existingData = {
         country: "{{ old('country', isset($sidat) ? ($sidat->country ?? 'Indonesia') : (Auth::user() && Auth::user()->isEnum() ? (Auth::user()->country ?? 'Indonesia') : 'Indonesia')) }}",
@@ -407,14 +433,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const regencyApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
     const districtApiBaseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
 
-    function initLocation() {
-        // Only handles Indonesia for now
-        const option = document.createElement('option');
-        option.value = 'Indonesia';
-        option.textContent = 'Indonesia';
-        countrySelect.appendChild(option);
-        countrySelect.value = 'Indonesia';
+    function setIndonesiaMode(isIndonesia) {
+        provinceSelectWrapper.classList.toggle('hidden', !isIndonesia);
+        regencySelectWrapper.classList.toggle('hidden', !isIndonesia);
+        districtSelectWrapper.classList.toggle('hidden', !isIndonesia);
+        provinceInputWrapper.classList.toggle('hidden', isIndonesia);
+        regencyInputWrapper.classList.toggle('hidden', isIndonesia);
+        districtInputWrapper.classList.toggle('hidden', isIndonesia);
 
+        provinceSelect.disabled = !isIndonesia;
+        regencySelect.disabled = !isIndonesia;
+        districtSelect.disabled = !isIndonesia;
+        provinceInput.disabled = isIndonesia;
+        regencyInput.disabled = isIndonesia;
+        districtInput.disabled = isIndonesia;
+
+        provinceSelect.required = isIndonesia;
+        regencySelect.required = isIndonesia;
+        districtSelect.required = isIndonesia;
+        provinceInput.required = !isIndonesia;
+        regencyInput.required = !isIndonesia;
+        districtInput.required = !isIndonesia;
+    }
+
+    function initLocation() {
         fetch(provinceApiUrl)
             .then(res => res.json())
             .then(provinces => {
@@ -427,6 +469,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 if (provinceSelect.value) loadRegencies();
             });
+    }
+
+    function switchLocationMode() {
+        const isIndonesia = countrySelect.value === 'Indonesia';
+        setIndonesiaMode(isIndonesia);
+
+        if (isIndonesia) {
+            initLocation();
+        }
     }
 
     function loadRegencies() {
@@ -466,7 +517,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     provinceSelect.addEventListener('change', loadRegencies);
     regencySelect.addEventListener('change', loadDistricts);
-    initLocation();
+    countrySelect.addEventListener('change', switchLocationMode);
+    switchLocationMode();
 });
 
 // Photo modal functions
