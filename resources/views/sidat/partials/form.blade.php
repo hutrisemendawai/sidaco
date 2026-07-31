@@ -108,19 +108,19 @@
 
             <!-- Number of Fisher -->
             <div>
-                <x-input-label for="number_of_fisher" :value="__('Number Of Fisher')" />
+                <x-input-label for="number_of_fisher" :value="__('Number of Fisher')" />
                 <x-text-input id="number_of_fisher" class="block mt-2 w-full py-2.5" type="number" name="number_of_fisher" :value="old('number_of_fisher', $sidat->number_of_fisher ?? '')" required />
             </div>
 
-            <!-- Type Of Fishing Gear -->
+            <!-- Type of Fishing Gear -->
             <div>
-                <x-input-label for="type_of_fishing_gear" :value="__('Type Of Fishing Gear')" />
+                <x-input-label for="type_of_fishing_gear" :value="__('Type of Fishing Gear')" />
                 <x-text-input id="type_of_fishing_gear" class="block mt-2 w-full py-2.5" type="text" name="type_of_fishing_gear" :value="old('type_of_fishing_gear', $sidat->type_of_fishing_gear ?? '')" required />
             </div>
 
             <!-- Number of Fishing Gear -->
             <div>
-                <x-input-label for="number_of_fishing_gear" :value="__('Number Of Fishing Gear')" />
+                <x-input-label for="number_of_fishing_gear" :value="__('Number of Fishing Gear')" />
                 <x-text-input id="number_of_fishing_gear" class="block mt-2 w-full py-2.5" type="number" name="number_of_fishing_gear" :value="old('number_of_fishing_gear', $sidat->number_of_fishing_gear ?? '')" required />
             </div>
 

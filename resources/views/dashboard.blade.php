@@ -553,7 +553,7 @@
                             data: {
                                 labels: @json($totalOfFisherLabels),
                                 datasets: [{
-                                    label: 'Total Of Fisher',
+                                    label: 'Total of Fisher',
                                     data: @json($TotalOfFisherCounts),
                                     backgroundColor: '#6366f1',
                                     borderRadius: 6,

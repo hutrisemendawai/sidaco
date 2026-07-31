@@ -64,7 +64,7 @@ class SidatDataExport implements FromQuery, WithHeadings, WithMapping
             'River',
             'Stage',
             'Fisher Name',
-            'Number Of Fisher',
+            'Number of Fisher',
             'Type of Fishing Gear',
             'Number of Fishing Gear',
             'Species Name',

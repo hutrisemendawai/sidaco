@@ -59,7 +59,7 @@
                             <li class="page-item disabled" aria-disabled="true"><span class="page-link">{{ $element }}</span></li>
                         @endif
 
-                        {{-- Array Of Links --}}
+                        {{-- Array of Links --}}
                         @if (is_array($element))
                             @foreach ($element as $page => $url)
                                 @if ($page == $paginator->currentPage())

@@ -14,7 +14,7 @@
                 <a class="icon item disabled" aria-disabled="true">{{ $element }}</a>
             @endif
 
-            {{-- Array Of Links --}}
+            {{-- Array of Links --}}
             @if (is_array($element))
                 @foreach ($element as $page => $url)
                     @if ($page == $paginator->currentPage())
