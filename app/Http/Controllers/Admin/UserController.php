@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -13,10 +15,22 @@ class UserController extends Controller
     /**
      * Display a listing of all users for the admin.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Get all users except for the currently logged-in admin
-        $users = User::where('id', '!=', Auth::id())->paginate(15);
+        $users = User::query()
+            ->where('id', '!=', Auth::id());
+
+        if ($request->filled('q')) {
+            $search = trim((string) $request->string('q'));
+            $users->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhereRaw("CONCAT(first_name, ' ', COALESCE(last_name, '')) like ?", ["%{$search}%"])
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $users->paginate(5)->withQueryString();
 
         return view('admin.users.index', compact('users'));
     }
@@ -41,5 +55,26 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('admin.users.index')->with('success', "{$user->first_name}'s role has been updated.");
+    }
+
+    /**
+     * Update a specific user's password.
+     */
+    public function updatePassword(Request $request, User $user)
+    {
+        if ($user->id === Auth::id()) {
+            return redirect()->route('admin.users.index')->with('error', 'Use profile settings to change your own password.');
+        }
+
+        $validated = $request->validateWithBag('adminUpdatePassword', [
+            'target_user_id' => ['nullable', 'integer'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('admin.users.index')->with('success', "{$user->first_name}'s password has been updated.");
     }
 }
