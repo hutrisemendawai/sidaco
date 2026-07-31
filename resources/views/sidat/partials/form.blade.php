@@ -109,10 +109,16 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            <!-- Stage -->
+            <!-- Stage Type -->
             <div>
-                <x-input-label for="stage" :value="__('Stage')" />
-                <x-text-input id="stage" class="block mt-2 w-full py-2.5" type="text" name="stage" :value="old('stage', $sidat->stage ?? '')" required />
+                <x-input-label for="stage_type" :value="__('Eel Stage Type')" />
+                <select id="stage_type" name="stage_type" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-lg shadow-sm text-gray-700">
+                    <option value="">{{ __('Select Type') }}</option>
+                    @foreach(['Glasseel', 'Elver', 'Yellow Eel'] as $type)
+                        <option value="{{ $type }}" {{ old('stage_type', $sidat->stage_type ?? '') == $type ? 'selected' : '' }}>{{ __($type) }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-2 text-xs text-gray-500">{{ __('Select the developmental stage of the eel') }}</p>
             </div>
 
             <!-- Fisherman Name -->
@@ -247,38 +253,6 @@
         </div>
     </div>
 
-    <!-- Stage Section -->
-    <div class="border-b-2 border-gray-100 pb-8">
-        <div class="flex items-center mb-6">
-            <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-            </div>
-            <h3 class="ml-4 text-xl font-bold text-gray-800">{{ __('Eel Stage Information') }}</h3>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-            <!-- Stage Type -->
-            <div>
-                <x-input-label for="stage_type" :value="__('Eel Stage Type')" />
-                <select id="stage_type" name="stage_type" class="block mt-2 w-full py-2.5 px-3 border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-lg shadow-sm text-gray-700">
-                    <option value="">{{ __('Select Type') }}</option>
-                    @foreach(['Glasseel', 'Elver', 'Yellow Eel'] as $type)
-                        <option value="{{ $type }}" {{ old('stage_type', $sidat->stage_type ?? '') == $type ? 'selected' : '' }}>{{ __($type) }}</option>
-                    @endforeach
-                </select>
-                <p class="mt-2 text-xs text-gray-500">{{ __('Select the developmental stage of the eel') }}</p>
-            </div>
-
-            <!-- Sampling (conditional for Glasseel) -->
-            <div id="sampling-wrapper" class="hidden">
-                <x-input-label for="sampling" :value="__('Sampling Number')" />
-                <x-text-input id="sampling" class="block mt-2 w-full py-2.5" type="number" min="0" name="sampling" :value="old('sampling', $sidat->sampling ?? '')" placeholder="e.g., 50" />
-                <p class="mt-2 text-xs text-gray-500">{{ __('Number of glass eels sampled') }}</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Action Buttons -->
     <div class="flex items-center justify-between pt-8 border-t-2 border-gray-100">
         <div class="flex gap-4">
@@ -388,22 +362,6 @@ document.addEventListener('DOMContentLoaded', function () {
         photoDropZone.classList.add('flex');
         if (removePhotoInput) removePhotoInput.value = "1";
     };
-
-    // Stage logic
-    const stageTypeSelect = document.getElementById('stage_type');
-    const samplingWrapper = document.getElementById('sampling-wrapper');
-    
-    if (stageTypeSelect && samplingWrapper) {
-        function toggleSampling() {
-            if (stageTypeSelect.value === 'Glasseel') {
-                samplingWrapper.classList.remove('hidden');
-            } else {
-                samplingWrapper.classList.add('hidden');
-            }
-        }
-        stageTypeSelect.addEventListener('change', toggleSampling);
-        toggleSampling();
-    }
 
     // Location API logic
     const countrySelect = document.getElementById('country');

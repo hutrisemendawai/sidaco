@@ -53,7 +53,6 @@ class ApprovalController extends Controller
             'regency' => ['required', 'string', 'max:255'],
             'district' => ['required', 'string', 'max:255'],
             'river' => ['required', 'string', 'max:255'],
-            'stage' => ['required', 'string', 'max:255'],
             'fisher_name' => ['required', 'string', 'max:255'],
             'number_of_fisher' => ['required', 'numeric', 'min:0'],
             'type_of_fishing_gear' => ['required', 'string', 'max:255'],
