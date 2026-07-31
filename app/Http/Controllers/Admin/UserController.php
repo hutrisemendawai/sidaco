@@ -16,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         // Get all users except for the currently logged-in admin
-        $users = User::where('id', '!=', Auth::id())->get();
+        $users = User::where('id', '!=', Auth::id())->paginate(15);
 
         return view('admin.users.index', compact('users'));
     }
