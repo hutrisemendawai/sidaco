@@ -102,7 +102,9 @@
 
             <!-- Fisherman Name -->
             <div>
-                <x-input-label for="fisher_name" :value="__('Fisher Name')" />
+                <!-- <x-input-label for="fisher_name" :value="__('Fisher Name')" /> -->
+                <!-- Commented Revision Req By tarisa -->
+                <x-input-label for="fisher_name" :value="__('Konsolidator Name')" />
                 <x-text-input id="fisher_name" class="block mt-2 w-full py-2.5" type="text" name="fisher_name" :value="old('fisher_name', $sidat->fisher_name ?? '')" required />
             </div>
 
