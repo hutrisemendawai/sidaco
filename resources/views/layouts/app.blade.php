@@ -153,7 +153,8 @@
             </aside>
 
             <!-- MOBILE SIDEBAR DRAWER -->
-            <div 
+            <div id="mobile-sidebar-drawer"
+                
                 x-show="mobileSidebarOpen" 
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -294,6 +295,19 @@
                             </svg>
                         </button>
 
+                            <div class="hidden md:flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-2 text-left shadow-sm select-none" id="shell-clock" aria-live="polite">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-sm ring-1 ring-emerald-100">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m5-3a8 8 0 11-16 0 8 8 0 0116 0z" />
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-700/70">Local time</div>
+                                    <div class="text-sm font-bold tracking-tight text-emerald-950" data-shell-clock-time>--:--</div>
+                                    <div class="text-[11px] font-medium text-emerald-900/70" data-shell-clock-date>Loading time</div>
+                                </div>
+                            </div>
+
                     </div>
 
                     <!-- Actions & User Profile -->
@@ -320,7 +334,7 @@
                     
                     <!-- COMPATIBLE TITLE HEADER -->
                     @if (isset($header))
-                        <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0" id="compat-page-header">
+                        <!-- <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0" id="compat-page-header">
                             <div>
                                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">
                                     {{ $header }}
@@ -329,7 +343,7 @@
                                     Tropical Anguillid Eel Data and Stock Assessment Dashboard.
                                 </p>
                             </div>
-                        </div>
+                        </div> -->
                     @endif
 
                     {{ $slot }}
@@ -340,11 +354,15 @@
         <!-- GSAP ENTRANCE ANIMATIONS -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Initialize premium entrance animations
+                if (window.__sidacoShellAnimationsRan) {
+                    return;
+                }
+
+                window.__sidacoShellAnimationsRan = true;
+
                 if (window.gsap) {
                     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-                    // Sidebar entrance
                     if (document.getElementById("desktop-sidebar")) {
                         tl.from("#desktop-sidebar", {
                             x: -50,
@@ -353,7 +371,6 @@
                         });
                     }
 
-                    // Topbar entrance
                     if (document.getElementById("main-topbar")) {
                         tl.from("#main-topbar", {
                             y: -30,
@@ -362,7 +379,6 @@
                         }, "-=0.8");
                     }
 
-                    // Header text and slot container entrance (only if element exists)
                     if (document.getElementById("compat-page-header")) {
                         tl.from("#compat-page-header", {
                             y: 20,
@@ -371,7 +387,6 @@
                         }, "-=0.6");
                     }
 
-                    // Animate list items/elements inside main slot if they have appropriate classes
                     const mainContentSlot = document.getElementById("main-content-slot");
                     if (mainContentSlot && mainContentSlot.children.length > 0) {
                         gsap.from("#main-content-slot > div", {
