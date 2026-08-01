@@ -23,7 +23,7 @@ class PaginationTest extends TestCase
 
         $users = $response->viewData('users');
         $this->assertTrue($users->hasPages());
-        $this->assertCount(15, $users->items());
+        $this->assertCount(5, $users->items());
     }
 
     public function test_approvals_index_is_paginated(): void

@@ -32,12 +32,16 @@ class RegistrationTest extends TestCase
             'birth_date' => '2000-01-01',
             'address' => 'Test address',
             'phone_number' => '081234567890',
-            'role' => 'enum'
+            'country' => 'Indonesia',
+            'province' => 'West Java',
+            'district' => 'Bandung',
+            'sub_district' => 'Coblong',
         ]);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'test@example.com'
+            'email' => 'test@example.com',
+            'role' => 'user',
         ]);
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('admin.users.index'));
     }
 }

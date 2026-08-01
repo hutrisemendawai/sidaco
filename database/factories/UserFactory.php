@@ -21,9 +21,10 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'role' => 'user',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), // default password
+            'password' => Hash::make('password'),
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->phoneNumber(),
+            'country' => $this->faker->randomElement(['Indonesia', 'Philippines', 'Myanmar', 'Vietnam']),
             'remember_token' => Str::random(10),
         ];
     }
@@ -36,7 +37,21 @@ class UserFactory extends Factory
             'birth_date' => '1990-01-01',
             'email' => 'admin@gmail.com',
             'role' => 'admin',
-            'password' => Hash::make('password'), // password admin
+            'country' => 'Indonesia',
+            'password' => Hash::make('password'),
+        ]);
+    }
+
+    public function enum(): Factory
+    {
+        return $this->state(fn(array $attributes) => [
+            'first_name' => 'Enum',
+            'last_name' => 'User',
+            'birth_date' => '1995-02-02',
+            'email' => 'enum@example.com',
+            'role' => 'enum',
+            'country' => 'Indonesia',
+            'password' => Hash::make('password'),
         ]);
     }
 }

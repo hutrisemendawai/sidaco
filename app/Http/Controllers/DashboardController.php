@@ -53,10 +53,10 @@ class DashboardController extends Controller
             $query = clone $scopedApprovedQuery;
 
             if ($selectedYear) {
-                $query->whereYear('date', $selectedYear);
+                $query->whereRaw("strftime('%Y', date) = ?", [$selectedYear]);
             }
             if ($selectedMonth) {
-                $query->whereMonth('date', $selectedMonth);
+                $query->whereRaw("strftime('%m', date) = ?", [str_pad((string) $selectedMonth, 2, '0', STR_PAD_LEFT)]);
             }
             if ($selectedProvince) {
                 $query->where('province', $selectedProvince);
@@ -67,20 +67,20 @@ class DashboardController extends Controller
 
             // --- Data for Animated Counters ---
             $totalEntries = (clone $query)->count();
-            $totalWeightThisYear = (clone $query)->whereYear('date', now()->year)->sum('total_weight_per_day');
+            $totalWeightThisYear = (clone $query)->whereRaw("strftime('%Y', date) = ?", [now()->year])->sum('total_weight_per_day');
             $uniqueCountry = (clone $query)->distinct('country')->count('country');
 
             // --- Filter dropdown data (country-scoped) ---
             $filterYears = (clone $scopedApprovedQuery)
-                ->select(DB::raw('YEAR(date) as year'))
+                ->select(DB::raw("strftime('%Y', date) as year"))
                 ->distinct()
                 ->orderBy('year', 'desc')
                 ->pluck('year')
                 ->toArray();
 
             $filterProvinces = (clone $scopedApprovedQuery)
-                ->when($selectedYear, fn($q) => $q->whereYear('date', $selectedYear))
-                ->when($selectedMonth, fn($q) => $q->whereMonth('date', $selectedMonth))
+                ->when($selectedYear, fn($q) => $q->whereRaw("strftime('%Y', date) = ?", [$selectedYear]))
+                ->when($selectedMonth, fn($q) => $q->whereRaw("strftime('%m', date) = ?", [str_pad((string) $selectedMonth, 2, '0', STR_PAD_LEFT)]))
                 ->select('province')
                 ->whereNotNull('province')
                 ->where('province', '!=', '')
@@ -90,8 +90,8 @@ class DashboardController extends Controller
                 ->toArray();
 
             $filterSpecies = (clone $scopedApprovedQuery)
-                ->when($selectedYear, fn($q) => $q->whereYear('date', $selectedYear))
-                ->when($selectedMonth, fn($q) => $q->whereMonth('date', $selectedMonth))
+                ->when($selectedYear, fn($q) => $q->whereRaw("strftime('%Y', date) = ?", [$selectedYear]))
+                ->when($selectedMonth, fn($q) => $q->whereRaw("strftime('%m', date) = ?", [str_pad((string) $selectedMonth, 2, '0', STR_PAD_LEFT)]))
                 ->select('species_name')
                 ->whereNotNull('species_name')
                 ->where('species_name', '!=', '')
@@ -102,21 +102,21 @@ class DashboardController extends Controller
 
             // --- Chart Data (filtered and country-scoped) ---
             $yearlyData = (clone $query)->select(
-                DB::raw('YEAR(date) as year'),
+                DB::raw("strftime('%Y', date) as year"),
                 DB::raw('SUM(total_weight_per_day) as total_weight')
             )
-                ->groupBy(DB::raw('YEAR(date)'))
-                ->orderBy(DB::raw('YEAR(date)'), 'asc')
+                ->groupBy(DB::raw("strftime('%Y', date)"))
+                ->orderBy(DB::raw("strftime('%Y', date)"), 'asc')
                 ->get();
 
             $monthlyData = (clone $query)->select(
-                DB::raw('YEAR(date) as year'),
-                DB::raw('MONTH(date) as month'),
+                DB::raw("strftime('%Y', date) as year"),
+                DB::raw("strftime('%m', date) as month"),
                 DB::raw('SUM(total_weight_per_day) as total_weight')
             )
-                ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
-                ->orderBy(DB::raw('YEAR(date)'), 'asc')
-                ->orderBy(DB::raw('MONTH(date)'), 'asc')
+                ->groupBy(DB::raw("strftime('%Y', date)"), DB::raw("strftime('%m', date)"))
+                ->orderBy(DB::raw("strftime('%Y', date)"), 'asc')
+                ->orderBy(DB::raw("strftime('%m', date)"), 'asc')
                 ->get();
 
             $yearlyCatchLabels = $yearlyData->map(fn($item) => Carbon::createFromDate($item->year)->format('Y'))->toArray();
